@@ -28,7 +28,7 @@ steps:
       steps:
         - run:
             name: confirm dependencies
-            command: << include(scripts/dependencies.sh) >>
+            command: <<include(scripts/dependencies.sh)>>
         - run:
             name: install kubectl << parameters.kubectl-version >>
-            command: << include(scripts/install_kubectl.sh) >>
+            command: <<include(scripts/install_kubectl.sh)>>
