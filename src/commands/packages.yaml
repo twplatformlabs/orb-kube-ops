@@ -1,0 +1,34 @@
+# src/commands/setup-packages.yaml
+
+description: >
+  Install specified kubernetes and testing tool versions on executor. Debian/Ubuntu and Alpine supported.
+
+parameters:
+  # will default to the version installed on the executor unless overridden.
+  # may specify a specific version or latest
+  kubectl-version:
+    type: string
+    default: blank
+  istioctl-version:
+    type: string
+    default: blank
+  helm-version:
+    type: string
+    default: blank
+  sonobuoy-version:
+    type: string
+    default: blank
+
+steps:
+  - unless:
+      condition:
+        equal: [ << parameters.kubectl-version >>, "blank" ]
+      environment:
+        KUBECTL_VERSION: << parameters.kubectl-version >>
+      steps:
+        - run:
+            name: confirm dependencies
+            command: << include(scripts/dependencies.sh >>
+        - run:
+            name: install kubectl << parameters.kubectl-version >>
+            command: << include(scripts/install_kubectl.sh) >>
