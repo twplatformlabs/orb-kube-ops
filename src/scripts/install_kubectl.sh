@@ -17,8 +17,7 @@ fi
 if [ "$(id -u)" = 0 ]; then
   install $VERSION
 else
-  echo "here"
-  sudo bash -c "$(declare -f install); install $VERSION"
+  sudo bash -c "$(declare -f install); install $VERSION;"
 fi
 
 kubectl version --client=true --short=true || { echo "error: invalid kubernetes version"; exit 2; }
