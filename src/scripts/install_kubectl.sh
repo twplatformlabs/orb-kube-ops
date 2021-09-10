@@ -10,7 +10,7 @@ function install() {
 curl --version
 
 if [[ "$KUBECTL_VERSION" == "latest" ]]; then
-  VERSION=$(curl -L -s https://dl.k8s.io/release/stable.txt)
+  VERSION=v$(curl -L -s https://dl.k8s.io/release/stable.txt)
 else
   VERSION=$KUBECTL_VERSION
 fi
