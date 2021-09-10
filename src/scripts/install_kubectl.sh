@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 function install() {
   curl -LO "https://dl.k8s.io/release/$1/bin/linux/amd64/kubectl"
