@@ -8,20 +8,22 @@ function install() {
 }
 
 curl --version
-echo "i asked it to deploy kubectl ${KUBECTL_VERSION}"
+echo "i asked it to deploy kubectl ${INSTALL_KUBECTL_VERSION}"
 
-if [[ "$KUBECTL_VERSION" == "latest" ]]; then
-  VERSION=v$(curl -L -s https://dl.k8s.io/release/stable.txt)
+if [[ "$INSTALL_KUBECTL_VERSION" == "latest" ]]; then
+echo "version = latest"
+  VERSION=$(curl -L -s https://dl.k8s.io/release/stable.txt)
 else
-  VERSION=$KUBECTL_VERSION
+  echo "version is ${INSTALL_KUBECTL_VERSION}"
+  VERSION=$INSTALL_KUBECTL_VERSION
 fi
 
 echo "preparing to install kubectl ${VERSION}"
 
 if [ "$(id -u)" = 0 ]; then
-  install $VERSION
+  install ${VERSION}
 else
-  sudo bash -c "$(declare -f install); install $VERSION;"
+  sudo bash -c "$(declare -f install); install ${VERSION};"
 fi
 
 kubectl version --client=true --short=true || { echo "error: invalid kubernetes version"; exit 2; }

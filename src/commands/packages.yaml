@@ -24,7 +24,7 @@ steps:
       condition:
         equal: [ << parameters.kubectl-version >>, "blank" ]
       environment:
-        KUBECTL_VERSION: << parameters.kubectl-version >>
+        INSTALL_KUBECTL_VERSION: << parameters.kubectl-version >>
       steps:
         - run:
             name: confirm dependencies
