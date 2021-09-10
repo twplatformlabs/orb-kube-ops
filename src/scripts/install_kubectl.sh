@@ -1,6 +1,7 @@
 #!/bin/bash
 
 function install() {
+  echo "installing kubectl ${1}"
   curl -LO "https://dl.k8s.io/release/$1/bin/linux/amd64/kubectl"
   chmod +x kubectl
   mv -f kubectl /usr/local/bin/kubectl
@@ -13,6 +14,8 @@ if [[ "$KUBECTL_VERSION" == "latest" ]]; then
 else
   VERSION=$KUBECTL_VERSION
 fi
+
+echo "preparing to install kubectl ${VERSION}"
 
 if [ "$(id -u)" = 0 ]; then
   install $VERSION
