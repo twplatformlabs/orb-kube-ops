@@ -7,9 +7,6 @@ function install() {
   mv -f kubectl /usr/local/bin/kubectl
 }
 
-curl --version
-echo "i asked it to deploy kubectl ${INSTALL_KUBECTL_VERSION}"
-
 if [[ "$INSTALL_KUBECTL_VERSION" == "latest" ]]; then
 echo "version = latest"
   VERSION=$(curl -L -s https://dl.k8s.io/release/stable.txt)

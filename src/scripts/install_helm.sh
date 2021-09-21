@@ -1,3 +1,34 @@
+#!/bin/bash
+
+function install() {
+  echo "installing helm ${1}"
+
+}
+
+function install_latest() {
+  echo "installing helm latest"
+
+}
+
+echo "preparing to install helm ${VERSION}"
+
+if [[ $INSTALL_HELM_VERSION == "latest" ]]; then
+  if [ "$(id -u)" = 0 ]; then
+    install_latest
+  else
+    sudo bash -c "$(declare -f install_latest); install_latest;"
+  fi
+else
+  if [ "$(id -u)" = 0 ]; then
+    install ${INSTALL_HELM_VERSION}
+  else
+    sudo bash -c "$(declare -f install); install ${INSTALL_HELM_VERSION};"
+  fi
+fi
+
+
+
+kubectl version --client=true --short=true || { echo "error: invalid kubernetes version"; exit 2; }
 
 
 

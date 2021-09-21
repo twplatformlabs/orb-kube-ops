@@ -20,6 +20,9 @@ parameters:
     default: blank
 
 steps:
+  - run:
+    name: confirm dependencies
+    command: <<include(scripts/dependencies.sh)>>
   - unless:
       condition:
         equal: [ << parameters.kubectl-version >>, "blank" ]
@@ -27,8 +30,14 @@ steps:
         INSTALL_KUBECTL_VERSION: << parameters.kubectl-version >>
       steps:
         - run:
-            name: confirm dependencies
-            command: <<include(scripts/dependencies.sh)>>
-        - run:
             name: install kubectl << parameters.kubectl-version >>
             command: <<include(scripts/install_kubectl.sh)>>
+  - unless:
+      condition:
+        equal: [ << parameters.helm-version >>, "blank" ]
+      environment:
+        INSTALL_HELM_VERSION: << parameters.helm-version >>
+      steps:
+        - run:
+            name: install helm << parameters.helm-version >>
+            command: <<include(scripts/helm.sh)>>
