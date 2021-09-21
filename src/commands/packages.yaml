@@ -40,4 +40,4 @@ steps:
       steps:
         - run:
             name: install helm << parameters.helm-version >>
-            command: <<include(scripts/helm.sh)>>
+            command: <<include(scripts/install_helm.sh)>>
