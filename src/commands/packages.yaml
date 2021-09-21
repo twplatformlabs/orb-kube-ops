@@ -21,8 +21,8 @@ parameters:
 
 steps:
   - run:
-    name: confirm dependencies
-    command: <<include(scripts/dependencies.sh)>>
+      name: confirm dependencies
+      command: <<include(scripts/dependencies.sh)>>
   - unless:
       condition:
         equal: [ << parameters.kubectl-version >>, "blank" ]

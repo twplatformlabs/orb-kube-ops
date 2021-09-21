@@ -29,4 +29,4 @@ else
   fi
 fi
 
-kubectl version || { echo "error: invalid helm version"; exit 2; }
+helm version || { echo "error: invalid helm version"; exit 2; }
