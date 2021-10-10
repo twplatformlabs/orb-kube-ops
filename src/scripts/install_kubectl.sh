@@ -7,7 +7,7 @@ function install() {
   mv -f kubectl /usr/local/bin/kubectl
 }
 
-export INSTALL_KUBECTL_VERSION=${1}
+echo "requested kubectl ${INSTALL_KUBECTL_VERSION}"
 
 if [[ "$INSTALL_KUBECTL_VERSION" == "latest" ]]; then
 echo "version = latest"

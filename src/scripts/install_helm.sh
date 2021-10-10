@@ -13,7 +13,7 @@ function install_latest() {
   bash ./get_helm.sh
 }
 
-export INSTALL_KUBECTL_VERSION=${1}
+echo "requested kubectl ${INSTALL_HELM_VERSION}"
 
 if [[ $INSTALL_HELM_VERSION == "latest" ]]; then
   if [ "$(id -u)" = 0 ]; then

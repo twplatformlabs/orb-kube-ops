@@ -29,11 +29,15 @@ steps:
       steps:
         - run:
             name: install kubectl << parameters.kubectl-version >>
-            command: <<include(scripts/install_kubectl.sh)>> << parameters.kubectl-version >>
+            environment:
+              INSTALL_KUBECTL_VERSION: << parameters.kubectl-version >>
+            command: <<include(scripts/install_kubectl.sh)>>
   - unless:
       condition:
         equal: [ << parameters.helm-version >>, "blank" ]
       steps:
         - run:
             name: install helm << parameters.helm-version >>
-            command: <<include(scripts/install_helm.sh)>> << parameters.helm-version >>
+            environment:
+              INSTALL_HELM_VERSION: << parameters.helm-version >>
+            command: <<include(scripts/install_helm.sh)>>
