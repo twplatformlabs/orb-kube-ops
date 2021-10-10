@@ -13,7 +13,7 @@ function install_latest() {
   bash ./get_helm.sh
 }
 
-echo "preparing to install helm ${VERSION}"
+export INSTALL_KUBECTL_VERSION=${1}
 
 if [[ $INSTALL_HELM_VERSION == "latest" ]]; then
   if [ "$(id -u)" = 0 ]; then
