@@ -34,11 +34,20 @@ major-tag-publish-filter: &major-tag-publish-filter
   tags:
     only: /^major.*/
 
+commands:
+  source-it:
+    steps:
+      - run:
+          name: view orb.yml
+          command: circleci orb pack src
+
 workflows:
   version: 2
 
   dev-release-kube-ops-orb:
     jobs:
+      - source-it
+      
       - orb-tools/validate:
           filters: *dev-release-filter
 
