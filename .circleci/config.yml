@@ -43,6 +43,8 @@ jobs:
   source-it:
     executor: orb-image
     steps:
+      - checkout
+      - setup_remote_docker
       - run:
           name: view orb.yml
           command: circleci orb pack src
