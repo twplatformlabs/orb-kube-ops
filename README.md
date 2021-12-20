@@ -10,5 +10,8 @@
 </div>
 <br />
 
+Works in conjunction with the twdps/circleci-kube-ops executor.  
+
+Primarily this orb assists in configuring the circleci execeutor for kubernetes operational tasks. In addition, it provides commands for kubernetes security baseline and conformance smoke testing.  
 
 See [orb registry](https://circleci.com/orbs/registry/orb/twdps/orb-kube-ops) for usage examples and release history.

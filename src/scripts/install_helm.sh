@@ -13,7 +13,7 @@ function install_latest() {
   bash ./get_helm.sh
 }
 
-echo "requested kubectl ${INSTALL_HELM_VERSION}"
+echo "requested helm ${INSTALL_HELM_VERSION}"
 
 if [[ $INSTALL_HELM_VERSION == "latest" ]]; then
   if [ "$(id -u)" = 0 ]; then
@@ -29,4 +29,4 @@ else
   fi
 fi
 
-helm version || { echo "error: invalid helm version"; exit 2; }
+helm version --short || { echo "error: invalid helm version"; exit 2; }

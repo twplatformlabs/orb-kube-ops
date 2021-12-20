@@ -1,0 +1,17 @@
+# src/commands/sonobuoy.yaml
+
+description: Run sonobuoy Kubernetes conformance tests.
+
+parameters:
+
+  sonobuoy-mode:
+    description: sonobuoy test mode
+    type: string
+    default: quick
+
+steps:
+  - run:
+      name: run kube-bench security scan
+      environment:
+        SONOBUOY-MODE: << parameters.sonobuoy-mode >>
+      command: <<include(scripts/sonobuoy_test.sh)>>

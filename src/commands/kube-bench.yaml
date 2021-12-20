@@ -1,0 +1,23 @@
+# src/commands/kube-bench.yaml
+
+description: Run aquasecurity CIS Kubernetes benchmark tests.
+
+parameters:
+
+  benchmark:
+    description: Required, benchmark to run. Use full for fully self-managed control plan
+    type: enum
+    enum: ["eks", "aks", "gke", "full"]
+  
+  namespace:
+    description: deploy kube-bench pod to this namespace.
+    type: string
+    default: "default"
+
+steps:
+  - run:
+      name: run kube-bench security scan
+      environment:
+        BENCHMARK: << parameters.benchmark >>
+        NAMESPACE: << parameters.namespace >>
+      command: <<include(scripts/kube_bench.sh)>>

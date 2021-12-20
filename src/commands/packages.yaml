@@ -9,13 +9,25 @@ parameters:
   kubectl-version:
     type: string
     default: blank
-  istioctl-version:
-    type: string
-    default: blank
   helm-version:
     type: string
     default: blank
+  bats-version:
+    type: string
+    default: blank
   sonobuoy-version:
+    type: string
+    default: blank
+  inspec-version:
+    type: string
+    default: blank
+  awspec-version:
+    type: string
+    default: blank
+  argocd-version:
+    type: string
+    default: blank
+  istioctl-version:
     type: string
     default: blank
 
@@ -41,3 +53,57 @@ steps:
             environment:
               INSTALL_HELM_VERSION: << parameters.helm-version >>
             command: <<include(scripts/install_helm.sh)>>
+  - unless:
+      condition:
+        equal: [ << parameters.bats-version >>, "blank" ]
+      steps:
+        - run:
+            name: install bats << parameters.bats-version >>
+            environment:
+              INSTALL_BATS_VERSION: << parameters.bats-version >>
+            command: <<include(scripts/install_bats.sh)>>
+  - unless:
+      condition:
+        equal: [ << parameters.sonobuoy-version >>, "blank" ]
+      steps:
+        - run:
+            name: install inspec << parameters.sonobuoy-version >>
+            environment:
+              INSTALL_SONOBUOY_VERSION: << parameters.sonobuoy-version >>
+            command: <<include(scripts/install_sonobuoy.sh)>>
+  - unless:
+      condition:
+        equal: [ << parameters.inspec-version >>, "blank" ]
+      steps:
+        - run:
+            name: install bats << parameters.inspec-version >>
+            environment:
+              INSTALL_INSPEC_VERSION: << parameters.inspec-version >>
+            command: <<include(scripts/install_inspec.sh)>>
+  - unless:
+      condition:
+        equal: [ << parameters.awspec-version >>, "blank" ]
+      steps:
+        - run:
+            name: install awspec << parameters.awspec-version >>
+            environment:
+              INSTALL_AWSPEC_VERSION: << parameters.awspec-version >>
+            command: <<include(scripts/install_awspec.sh)>>
+  - unless:
+      condition:
+        equal: [ << parameters.argocd-version >>, "blank" ]
+      steps:
+        - run:
+            name: install argocd << parameters.argocd-version >>
+            environment:
+              INSTALL_AWSPEC_VERSION: << parameters.argocd-version >>
+            command: <<include(scripts/install_argocd.sh)>>
+  - unless:
+      condition:
+        equal: [ << parameters.istioctl-version >>, "blank" ]
+      steps:
+        - run:
+            name: install istioctl << parameters.istioctl-version >>
+            environment:
+              INSTALL_AWSPEC_VERSION: << parameters.istioctl-version >>
+            command: <<include(scripts/install_istioctl.sh)>>
