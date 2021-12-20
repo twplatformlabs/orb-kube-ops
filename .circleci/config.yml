@@ -47,7 +47,9 @@ jobs:
       - setup_remote_docker
       - run:
           name: view orb.yml
-          command: circleci orb pack src
+          command: |
+            circleci orb pack src > orb.yml
+            circleci orb validate orb.yml
 
 workflows:
   version: 2
