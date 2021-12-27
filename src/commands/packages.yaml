@@ -96,7 +96,7 @@ steps:
         - run:
             name: install argocd << parameters.argocd-version >>
             environment:
-              INSTALL_AWSPEC_VERSION: << parameters.argocd-version >>
+              INSTALL_ARGOCD_VERSION: << parameters.argocd-version >>
             command: <<include(scripts/install_argocd.sh)>>
   - unless:
       condition:
@@ -105,5 +105,5 @@ steps:
         - run:
             name: install istioctl << parameters.istioctl-version >>
             environment:
-              INSTALL_AWSPEC_VERSION: << parameters.istioctl-version >>
+              INSTALL_ISTIOCTL_VERSION: << parameters.istioctl-version >>
             command: <<include(scripts/install_istioctl.sh)>>
