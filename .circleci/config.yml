@@ -2,7 +2,7 @@
 version: 2.1
 
 orbs:
-  orb-tools: twdps/orb-tools@dev:latest
+  orb-tools: twdps/orb-tools@0.2.0
 
 dev-release-filter: &dev-release-filter
   branches:
@@ -34,30 +34,11 @@ major-tag-publish-filter: &major-tag-publish-filter
   tags:
     only: /^major.*/
 
-executors:
-  orb-image:
-    docker:
-      - image: docker.io/circleci/circleci-cli:alpine
-
-jobs:
-  source-it:
-    executor: orb-image
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          name: view orb.yml
-          command: |
-            circleci orb pack src > orb.yml
-            circleci orb validate orb.yml
-
 workflows:
   version: 2
 
   dev-release-kube-ops-orb:
     jobs:
-      - source-it
-
       - orb-tools/validate:
           filters: *dev-release-filter
 

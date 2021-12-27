@@ -2,7 +2,7 @@
 
 function install() {
   echo "installing argocd ${1}"
-  curl -sSL -o argocd https://github.com/argoproj/argo-cd/releases/download/${1}/argocd-linux-amd64
+  curl -sSL -o argocd https://github.com/argoproj/argo-cd/releases/download/v${1}/argocd-linux-amd64
   chmod +x argocd
   sudo mv ./argocd /usr/local/bin/argocd
 }

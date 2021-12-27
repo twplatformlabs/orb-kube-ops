@@ -2,8 +2,8 @@
 
 function install() {
   echo "installing helm ${1}"
-  curl -SLO "https://get.helm.sh/helm-${1}-linux-amd64.tar.gz"
-  sudo tar -xf "helm-${1}-linux-amd64.tar.gz"
+  curl -SLO "https://get.helm.sh/helm-v${1}-linux-amd64.tar.gz"
+  sudo tar -xf "helm-v${1}-linux-amd64.tar.gz"
   sudo mv -f linux-amd64/helm /usr/local/bin
 }
 

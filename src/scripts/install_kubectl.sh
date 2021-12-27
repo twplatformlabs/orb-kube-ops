@@ -14,7 +14,7 @@ echo "version = latest"
   VERSION=$(curl -L -s https://dl.k8s.io/release/stable.txt)
 else
   echo "version is ${INSTALL_KUBECTL_VERSION}"
-  VERSION=$INSTALL_KUBECTL_VERSION
+  VERSION=v$INSTALL_KUBECTL_VERSION
 fi
 
 echo "preparing to install kubectl ${VERSION}"

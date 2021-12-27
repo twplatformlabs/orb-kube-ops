@@ -32,3 +32,4 @@ else
 fi
 
 sonobuoy version --short || { echo "error: invalid sonobuoy version"; exit 2; }
+
