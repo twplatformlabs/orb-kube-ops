@@ -1,4 +1,5 @@
 #!/bin/bash
+export VERIFY_CHECKSUM=false
 
 function install() {
   echo "installing helm ${1}"
