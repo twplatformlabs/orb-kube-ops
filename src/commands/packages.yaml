@@ -67,7 +67,7 @@ steps:
         equal: [ << parameters.sonobuoy-version >>, "blank" ]
       steps:
         - run:
-            name: install inspec << parameters.sonobuoy-version >>
+            name: install sonobuoy << parameters.sonobuoy-version >>
             environment:
               INSTALL_SONOBUOY_VERSION: << parameters.sonobuoy-version >>
             command: <<include(scripts/install_sonobuoy.sh)>>
@@ -76,7 +76,7 @@ steps:
         equal: [ << parameters.inspec-version >>, "blank" ]
       steps:
         - run:
-            name: install bats << parameters.inspec-version >>
+            name: install inspec << parameters.inspec-version >>
             environment:
               INSTALL_INSPEC_VERSION: << parameters.inspec-version >>
             command: <<include(scripts/install_inspec.sh)>>

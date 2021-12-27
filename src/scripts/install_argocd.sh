@@ -8,7 +8,7 @@ function install() {
 }
 
 function install_latest() {
-  echo "installing helm latest"
+  echo "installing argocd latest"
   curl -sSL -o argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
   chmod +x argocd
   sudo mv ./argocd /usr/local/bin/argocd
