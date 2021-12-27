@@ -30,4 +30,4 @@ else
   fi
 fi
 
-argocd version --short || { echo "error: invalid argocd version"; exit 2; }
+argocd version --client || { echo "error: invalid argocd version"; exit 2; }
