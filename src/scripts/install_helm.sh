@@ -1,5 +1,4 @@
 #!/bin/bash
-export VERIFY_CHECKSUM=false
 
 function install() {
   echo "installing helm ${1}"
@@ -11,7 +10,7 @@ function install() {
 function install_latest() {
   echo "installing helm latest"
   curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
-  bash ./get_helm.sh
+  VERIFY_CHECKSUM=false bash ./get_helm.sh
 }
 
 echo "requested helm ${INSTALL_HELM_VERSION}"
