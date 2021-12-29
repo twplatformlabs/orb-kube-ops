@@ -17,28 +17,28 @@ parameters:
 steps:
   - when:
       condition:
-        equal: [ << parameters.benchmarkn >>, "aks" ]
+        equal: [ << parameters.benchmark >>, "aks" ]
       steps:
         - run:
             name: use CIS Azure AKS benchmarks
             command: <<include(scripts/benchmark_aks.sh)>>
   - when:
       condition:
-        equal: [ << parameters.benchmarkn >>, "eks" ]
+        equal: [ << parameters.benchmark >>, "eks" ]
       steps:
         - run:
             name: use CIS AWS EKS benchmarks
             command: <<include(scripts/benchmark_eks.sh)>>
   - when:
       condition:
-        equal: [ << parameters.benchmarkn >>, "gke" ]
+        equal: [ << parameters.benchmark >>, "gke" ]
       steps:
         - run:
             name: use CIS Google Cloud Platform GKE benchmarks
             command: <<include(scripts/benchmark_gke.sh)>>
   - when:
       condition:
-        equal: [ << parameters.benchmarkn >>, "full" ]
+        equal: [ << parameters.benchmark >>, "full" ]
       steps:
         - run:
             name: use CIS Kubernetes (generic) benchmarks
