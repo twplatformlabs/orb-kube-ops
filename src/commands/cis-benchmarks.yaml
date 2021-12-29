@@ -35,7 +35,7 @@ steps:
       steps:
         - run:
             name: use CIS Google Cloud Platform GKE benchmarks
-            command: <<include(scripts/benchmark_gks.sh)>>
+            command: <<include(scripts/benchmark_gke.sh)>>
   - when:
       condition:
         equal: [ << parameters.benchmarkn >>, "full" ]
