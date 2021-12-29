@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-# setup cis-benchmarks-deployment.yaml deployment
-cp scripts/benchmark_${BENCHMARK}.yaml cis-benchmarks-deployment.yaml
-
 kubectl apply -n ${NAMESPACE} -f cis-benchmarks-deployment.yaml && sleep 10
 
 kubectl logs -n ${NAMESPACE} -f job.batch/kube-bench --all-containers=true | grep "\[FAIL" > temp.results

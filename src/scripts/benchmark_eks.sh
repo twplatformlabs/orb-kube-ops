@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+cat << EOF > cis-benchmarks-deployment.yaml
 ---
 apiVersion: batch/v1
 kind: Job
@@ -32,3 +34,4 @@ spec:
         - name: etc-kubernetes
           hostPath:
             path: "/etc/kubernetes"
+EOF

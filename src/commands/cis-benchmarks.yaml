@@ -15,6 +15,34 @@ parameters:
     default: "default"
 
 steps:
+  - when:
+      condition:
+        equal: [ << parameters.benchmarkn >>, "aks" ]
+      steps:
+        - run:
+            name: use CIS Azure AKS benchmarks
+            command: <<include(scripts/benchmark_aks.sh)>>
+  - when:
+      condition:
+        equal: [ << parameters.benchmarkn >>, "eks" ]
+      steps:
+        - run:
+            name: use CIS AWS EKS benchmarks
+            command: <<include(scripts/benchmark_eks.sh)>>
+  - when:
+      condition:
+        equal: [ << parameters.benchmarkn >>, "gke" ]
+      steps:
+        - run:
+            name: use CIS Google Cloud Platform GKE benchmarks
+            command: <<include(scripts/benchmark_gks.sh)>>
+  - when:
+      condition:
+        equal: [ << parameters.benchmarkn >>, "full" ]
+      steps:
+        - run:
+            name: use CIS Kubernetes (generic) benchmarks
+            command: <<include(scripts/benchmark_full.sh)>>
   - run:
       name: run CIS Kubernetes benchmark security scan
       environment:

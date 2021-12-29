@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+cat << EOF > cis-benchmarks-deployment.yaml
 ---
 apiVersion: batch/v1
 kind: Job
@@ -83,3 +85,4 @@ spec:
         - name: opt-cni-bin
           hostPath:
             path: "/opt/cni/bin/"
+EOF

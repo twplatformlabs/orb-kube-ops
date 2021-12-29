@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+cat << EOF > cis-benchmarks-deployment.yaml
 ---
 apiVersion: batch/v1
 kind: Job
@@ -10,7 +12,7 @@ spec:
       containers:
         - name: kube-bench
           image: aquasec/kube-bench:latest
-          command: ["kube-bench", "run", "--targets", "node,policies,managedservices", "--benchmark", "gke-1.2.0"]
+          command: ["kube-bench", "run", "--targets", "node", "--benchmark", "aks-1.0"]
           volumeMounts:
             - name: var-lib-kubelet
               mountPath: /var/lib/kubelet
@@ -18,11 +20,11 @@ spec:
             - name: etc-systemd
               mountPath: /etc/systemd
               readOnly: true
+            - name: etc-default
+              mountPath: /etc/default
+              readOnly: true
             - name: etc-kubernetes
               mountPath: /etc/kubernetes
-              readOnly: true
-            - name: home-kubernetes
-              mountPath: /home/kubernetes
               readOnly: true
       restartPolicy: Never
       volumes:
@@ -32,9 +34,10 @@ spec:
         - name: etc-systemd
           hostPath:
             path: "/etc/systemd"
+        - name: etc-default
+          hostPath:
+            path: "/etc/default"
         - name: etc-kubernetes
           hostPath:
             path: "/etc/kubernetes"
-        - name: home-kubernetes
-          hostPath:
-            path: "/home/kubernetes"
+EOF
