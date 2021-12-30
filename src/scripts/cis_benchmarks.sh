@@ -9,7 +9,7 @@ sleep 10
 echo "check job logs for FAILURE"
 RESULTS=$(kubectl logs -n ${NAMESPACE} -f job.batch/kube-bench --all-containers=true | grep "0 checks FAIL")
 
-echo "eval temp.results file"
+echo "evaluate RESULTS"
 if [[ -z "$RESULTS" ]]; then
   echo "kube-bench conformance results error:"
   cat temp.results
