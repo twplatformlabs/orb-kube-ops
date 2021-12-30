@@ -46,6 +46,5 @@ steps:
   - run:
       name: run CIS Kubernetes benchmark security scan
       environment:
-        BENCHMARK: << parameters.benchmark >>
         NAMESPACE: << parameters.namespace >>
       command: <<include(scripts/cis_benchmarks.sh)>>
