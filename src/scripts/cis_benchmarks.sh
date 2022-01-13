@@ -3,7 +3,7 @@
 echo "deploy benchmark job"
 kubectl apply -n ${NAMESPACE} -f cis-benchmarks-deployment.yaml
 
-echo "sleep for 10 seconds"
+echo "sleep for 30 seconds"
 sleep 30
 
 echo "check job logs for FAILURE"
