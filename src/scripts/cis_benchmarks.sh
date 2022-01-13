@@ -4,7 +4,7 @@ echo "deploy benchmark job"
 kubectl apply -n ${NAMESPACE} -f cis-benchmarks-deployment.yaml
 
 echo "sleep for 10 seconds"
-sleep 10
+sleep 30
 
 echo "check job logs for FAILURE"
 RESULTS=$(kubectl logs -n ${NAMESPACE} -f job.batch/kube-bench --all-containers=true | grep "0 checks FAIL")
