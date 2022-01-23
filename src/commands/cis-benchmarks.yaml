@@ -1,6 +1,6 @@
 # src/commands/kube-bench.yaml
 
-description: Run aquasecurity CIS Kubernetes benchmark tests.
+description: Run aquasecurity CIS Kubernetes benchmark tests
 
 parameters:
 
