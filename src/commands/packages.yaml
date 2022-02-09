@@ -30,6 +30,9 @@ parameters:
   istioctl-version:
     type: string
     default: blank
+  terraform-version:
+    type: string
+    default: blank
 
 steps:
   - run:
@@ -107,3 +110,13 @@ steps:
             environment:
               INSTALL_ISTIOCTL_VERSION: << parameters.istioctl-version >>
             command: <<include(scripts/install_istioctl.sh)>>
+  - unless:
+      condition:
+        equal: [ << parameters.terraform-version >>, "blank" ]
+      steps:
+        - run:
+            name: install terraform << parameters.istioctl-version >>
+            environment:
+              INSTALL_TERRAFORM_VERSION: << parameters.terraform-version >>
+            command: <<include(scripts/install_terraform.sh)>>
+
