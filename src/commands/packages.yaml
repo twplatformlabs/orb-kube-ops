@@ -115,7 +115,7 @@ steps:
         equal: [ << parameters.terraform-version >>, "blank" ]
       steps:
         - run:
-            name: install terraform << parameters.istioctl-version >>
+            name: install terraform << parameters.terraform-version >>
             environment:
               INSTALL_TERRAFORM_VERSION: << parameters.terraform-version >>
             command: <<include(scripts/install_terraform.sh)>>
