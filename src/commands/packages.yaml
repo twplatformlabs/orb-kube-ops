@@ -5,7 +5,7 @@ description: >
 
 parameters:
   # will default to the version installed on the executor unless overridden.
-  # may specify a specific version or latest
+  # may specify a specific version or latest -
   kubectl-version:
     type: string
     default: blank
