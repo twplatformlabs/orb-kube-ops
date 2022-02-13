@@ -33,6 +33,9 @@ parameters:
   terraform-version:
     type: string
     default: blank
+  datadog-version:
+    type: string
+    default: blank
 
 steps:
   - run:
@@ -119,4 +122,12 @@ steps:
             environment:
               INSTALL_TERRAFORM_VERSION: << parameters.terraform-version >>
             command: <<include(scripts/install_terraform.sh)>>
-
+  - unless:
+      condition:
+        equal: [ << parameters.datadog-version >>, "blank" ]
+      steps:
+        - run:
+            name: install datadog cli << parameters.terraform-version >>
+            environment:
+              INSTALL_DATADOG_VERSION: << parameters.datadog-version >>
+            command: <<include(scripts/install_datadog.sh)>>
