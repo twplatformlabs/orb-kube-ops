@@ -127,7 +127,7 @@ steps:
         equal: [ << parameters.datadog-version >>, "blank" ]
       steps:
         - run:
-            name: install datadog cli << parameters.terraform-version >>
+            name: install datadog cli << parameters.datadog-version >>
             environment:
               INSTALL_DATADOG_VERSION: << parameters.datadog-version >>
             command: <<include(scripts/install_datadog.sh)>>

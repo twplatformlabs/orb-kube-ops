@@ -27,4 +27,4 @@ else
   fi
 fi
 
-datadog --version || { echo "error: invalid datadog version"; exit 2; }
+dog --version || { echo "error: invalid datadog version"; exit 2; }
