@@ -2,13 +2,13 @@
 
 function install() {
   echo "installing inspec ${1}"
-  sudo gem install --no-document inspec-bin:${1}
+  gem install --no-document inspec-bin:${1}
 
 }
 
 function install_latest() {
   echo "installing inspec latest"
-  sudo gem install --no-document inspec-bin
+  gem install --no-document inspec-bin
 }
 
 echo "requested inspec ${INSTALL_INSPEC_VERSION}"
