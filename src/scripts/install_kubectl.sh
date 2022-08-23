@@ -8,6 +8,7 @@ function install() {
 }
 
 echo "requested kubectl ${INSTALL_KUBECTL_VERSION}"
+echo "USE_SUDO = ${USE_SUDO}"
 
 if [[ "$INSTALL_KUBECTL_VERSION" == "latest" ]]; then
 echo "version = latest"
