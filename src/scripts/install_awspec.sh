@@ -28,4 +28,4 @@ else
   fi
 fi
 
-awspec version || { echo "error: invalid inspec version"; exit 2; }
+awspec --version || { echo "error: invalid awspec version"; exit 2; }
