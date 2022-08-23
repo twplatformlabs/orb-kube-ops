@@ -3,12 +3,14 @@
 description: >
   Install specified kubernetes and testing tool versions on executor. Debian/Ubuntu and Alpine supported.
 
+  Note: for circleci Ubuntu machine images, you must set use-sudo:false
+
 parameters:
   use-sudo:
     description: package needs to be installed with elevated privileges
     type: boolean
     default: false
-    
+
   # will default to the version installed on the executor unless overridden.
   # may specify a specific version or latest
   kubectl-version:
