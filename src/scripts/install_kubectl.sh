@@ -19,10 +19,10 @@ fi
 
 echo "preparing to install kubectl ${VERSION}"
 
-if [ "$(id -u)" = 0 ]; then
-  install ${VERSION}
-else
+if [[ "$USE_SUDO" ]]; then
   sudo bash -c "$(declare -f install); install ${VERSION};"
+else
+  install ${VERSION}
 fi
 
 kubectl version --client=true --short=true || { echo "error: invalid kubernetes version"; exit 2; }

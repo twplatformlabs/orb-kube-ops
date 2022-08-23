@@ -4,8 +4,13 @@ description: >
   Install specified kubernetes and testing tool versions on executor. Debian/Ubuntu and Alpine supported.
 
 parameters:
+  use-sudo:
+    description: package needs to be installed with elevated privileges
+    type: boolean
+    default: false
+    
   # will default to the version installed on the executor unless overridden.
-  # may specify a specific version or latest -
+  # may specify a specific version or latest
   kubectl-version:
     type: string
     default: blank
@@ -48,6 +53,7 @@ steps:
         - run:
             name: install kubectl << parameters.kubectl-version >>
             environment:
+              USE_SUDO: << parameters.use-sudo >>
               INSTALL_KUBECTL_VERSION: << parameters.kubectl-version >>
             command: <<include(scripts/install_kubectl.sh)>>
   - unless:
@@ -57,6 +63,7 @@ steps:
         - run:
             name: install helm << parameters.helm-version >>
             environment:
+              USE_SUDO: << parameters.use-sudo >>
               INSTALL_HELM_VERSION: << parameters.helm-version >>
             command: <<include(scripts/install_helm.sh)>>
   - unless:
@@ -66,6 +73,7 @@ steps:
         - run:
             name: install bats << parameters.bats-version >>
             environment:
+              USE_SUDO: << parameters.use-sudo >>
               INSTALL_BATS_VERSION: << parameters.bats-version >>
             command: <<include(scripts/install_bats.sh)>>
   - unless:
@@ -75,6 +83,7 @@ steps:
         - run:
             name: install sonobuoy << parameters.sonobuoy-version >>
             environment:
+              USE_SUDO: << parameters.use-sudo >>
               INSTALL_SONOBUOY_VERSION: << parameters.sonobuoy-version >>
             command: <<include(scripts/install_sonobuoy.sh)>>
   - unless:
@@ -84,6 +93,7 @@ steps:
         - run:
             name: install inspec << parameters.inspec-version >>
             environment:
+              USE_SUDO: << parameters.use-sudo >>
               INSTALL_INSPEC_VERSION: << parameters.inspec-version >>
             command: <<include(scripts/install_inspec.sh)>>
   - unless:
@@ -93,6 +103,7 @@ steps:
         - run:
             name: install awspec << parameters.awspec-version >>
             environment:
+              USE_SUDO: << parameters.use-sudo >>
               INSTALL_AWSPEC_VERSION: << parameters.awspec-version >>
             command: <<include(scripts/install_awspec.sh)>>
   - unless:
@@ -102,6 +113,7 @@ steps:
         - run:
             name: install argocd << parameters.argocd-version >>
             environment:
+              USE_SUDO: << parameters.use-sudo >>
               INSTALL_ARGOCD_VERSION: << parameters.argocd-version >>
             command: <<include(scripts/install_argocd.sh)>>
   - unless:
@@ -111,6 +123,7 @@ steps:
         - run:
             name: install istioctl << parameters.istioctl-version >>
             environment:
+              USE_SUDO: << parameters.use-sudo >>
               INSTALL_ISTIOCTL_VERSION: << parameters.istioctl-version >>
             command: <<include(scripts/install_istioctl.sh)>>
   - unless:
@@ -120,6 +133,7 @@ steps:
         - run:
             name: install terraform << parameters.terraform-version >>
             environment:
+              USE_SUDO: << parameters.use-sudo >>
               INSTALL_TERRAFORM_VERSION: << parameters.terraform-version >>
             command: <<include(scripts/install_terraform.sh)>>
   - unless:
@@ -129,5 +143,6 @@ steps:
         - run:
             name: install datadog cli << parameters.datadog-version >>
             environment:
+              USE_SUDO: << parameters.use-sudo >>
               INSTALL_DATADOG_VERSION: << parameters.datadog-version >>
             command: <<include(scripts/install_datadog.sh)>>
