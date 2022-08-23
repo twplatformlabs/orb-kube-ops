@@ -3,7 +3,12 @@
 description: >
   Install specified kubernetes and testing tool versions on executor. Debian/Ubuntu and Alpine supported.
 
-  Note: for circleci Ubuntu machine images, you must set use-sudo:false
+  Note:
+  - awspec install on circleci ubuntu machine images
+    Must set use-sudo as false
+    If no other gems installed, may need to install nokogiri as awspec dependency
+  - bats install on circleci ubuntu machine images
+    Must set use-sudo as false
 
 parameters:
   use-sudo:
