@@ -53,6 +53,9 @@ parameters:
   datadog-version:
     type: string
     default: blank
+  kind-version:
+    type: string
+    default: blank
 
 steps:
   - run:
@@ -158,3 +161,13 @@ steps:
               USE_SUDO: << parameters.use-sudo >>
               INSTALL_DATADOG_VERSION: << parameters.datadog-version >>
             command: <<include(scripts/install_datadog.sh)>>
+  - unless:
+      condition:
+        equal: [ << parameters.kind-version >>, "blank" ]
+      steps:
+        - run:
+            name: install kind cli << parameters.kind-version >>
+            environment:
+              USE_SUDO: << parameters.use-sudo >>
+              INSTALL_KIND_VERSION: << parameters.kind-version >>
+            command: <<include(scripts/install_kind.sh)>>
