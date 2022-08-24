@@ -37,9 +37,7 @@ major-tag-publish-filter: &major-tag-publish-filter
 
 jobs:
   integration-tests:
-    machine:
-      image: ubuntu-2204:2022.07.1
-    shell: /bin/bash -eo pipefail
+    executor: continuation/default
     steps:
       - continuation/continue:
           configuration_path: integration-tests.yml
