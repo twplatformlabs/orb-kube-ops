@@ -23,6 +23,9 @@ jobs:
 workflows:
   setup:
     jobs:
+      - orb-tools/validate:
+          filters: *dev-release-filter
+          
       - dev-release-kube-ops-orb:
           filters: *dev-release-filter
 
