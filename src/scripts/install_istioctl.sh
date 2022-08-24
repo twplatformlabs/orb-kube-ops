@@ -3,13 +3,13 @@
 function install() {
   echo "installing istioctl ${1}"
   curl -L https://istio.io/downloadIstio  | ISTIO_VERSION="${1}" sh -
-  mv -f "istio*/bin/istioctl" /usr/local/bin/istioctl
+  mv -f "istio-${1}/bin/istioctl" /usr/local/bin/istioctl
 }
 
 function install_latest() {
   echo "installing istioctl latest"
   curl -L https://istio.io/downloadIstio  | sh -
-  mv -f "istio*/bin/istioctl" /usr/local/bin/istioctl
+  mv -f "istio-$(echo $(find . -type d -name istio*) | cut -d "-" -f 2)/bin/istioctl" /usr/local/bin/istioctl
 }
 
 echo "requested istioctl ${INSTALL_ISTIOCTL_VERSION}"
