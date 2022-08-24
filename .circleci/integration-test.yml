@@ -1,0 +1,291 @@
+---
+version: 2.1
+
+orbs:
+  kube: twdps/kube-ops@dev:latest
+
+commands:
+  alpine-no-sudo-prep:
+    steps:
+      - run:
+          name: add dependencies to circleci-remote-docker image
+          command: |
+            apk add --no-cache curl bash build-base gcc g++ make jq unzip
+
+            echo 'install ruby'
+            apk add --no-cache ruby ruby-dev ruby-webrick ruby-bundler
+
+            echo 'install python'
+            apk add --no-cache python3 python3-dev libffi-dev
+            python3 -m ensurepip
+            rm -r /usr/lib/python*/ensurepip
+            pip3 install --upgrade pip
+            if [ ! -e /usr/bin/pip ]; then ln -s /usr/bin/pip3 /usr/bin/pip ; fi
+            ln -s -f /usr/bin/pydoc3 /usr/bin/pydoc
+            ln -s -f /usr/bin/python3 /usr/bin/python
+            ln -s -f /usr/bin/python3-config /usr/bin/python-config
+
+            echo 'install nodejs/npm'
+            apk add --no-cache nodejs npm 
+
+  alpine-sudo-prep:
+    steps:
+      - run:
+          name: add dependencies to circleci-remote-docker image
+          command: |
+            sudo apk add --no-cache curl bash build-base gcc g++ make jq unzip
+            
+            echo 'install ruby'
+            sudo apk add --no-cache ruby ruby-dev ruby-webrick ruby-bundler
+
+            echo 'install python'
+            sudo apk add --no-cache python3 python3-dev libffi-dev
+            sudo python3 -m ensurepip
+            sudo rm -r /usr/lib/python*/ensurepip
+            sudo pip3 install --upgrade pip
+            if [ ! -e /usr/bin/pip ]; then sudo ln -s /usr/bin/pip3 /usr/bin/pip ; fi
+            sudo ln -s -f /usr/bin/pydoc3 /usr/bin/pydoc
+            sudo ln -s -f /usr/bin/python3 /usr/bin/python
+            sudo ln -s -f /usr/bin/python3-config /usr/bin/python-config
+
+            echo 'install nodejs/npm'
+            sudo apk add --no-cache nodejs npm 
+
+  slim-no-sudo-prep:
+    steps:
+      - run:
+          name: add dependencies to circleci-remote-docker image
+          command: |
+            apt-get update && apt-get install --no-install-recommends -y curl bash gcc g++ make jq unzip
+
+            echo 'install ruby'
+            apt-get install --no-install-recommends -y ruby-full 
+
+            echo 'install python'
+            apt-get install --no-install-recommends -y python3-dev python3-pip python3-venv
+            ln -f -s /usr/bin/pip3 /usr/bin/pip
+            ln -s -f /usr/bin/pydoc3 /usr/bin/pydoc
+            ln -s -f /usr/bin/python3 /usr/bin/python
+            ln -s -f /usr/bin/python3-config /usr/bin/python-config
+
+            echo 'install nodejs/npm'
+            bash -c "curl -sL https://deb.nodesource.com/setup_16.x | bash - "
+            apt-get install --no-install-recommends -y nodejs npm 
+
+  slim-sudo-prep:
+    steps:
+      - run:
+          name: add dependencies to circleci-remote-docker image
+          command: |
+            sudo apt-get update && sudo apt-get install --no-install-recommends -y curl bash gcc g++ make jq unzip
+
+            echo 'install ruby'
+            sudo apt-get install --no-install-recommends -y ruby-full 
+
+            echo 'install python'
+            sudo apt-get install --no-install-recommends -y python3-dev python3-pip python3-venv
+            sudo ln -f -s /usr/bin/pip3 /usr/bin/pip
+            sudo ln -s -f /usr/bin/pydoc3 /usr/bin/pydoc
+            sudo ln -s -f /usr/bin/python3 /usr/bin/python
+            sudo ln -s -f /usr/bin/python3-config /usr/bin/python-config
+
+            echo 'install nodejs/npm'
+            sudo bash -c "curl -sL https://deb.nodesource.com/setup_16.x | bash - "
+            sudo apt-get install --no-install-recommends -y nodejs npm 
+
+
+jobs:
+  alpine-no-sudo-latest:
+    docker:
+      - image: twdps/circleci-remote-docker:alpine-stable
+    steps:
+      - alpine-no-sudo-prep
+      - kube/packages:
+          use-sudo: false
+          argocd-version: latest
+          awspec-version: latest
+          bats-version: latest
+          datadog-version: latest
+          helm-version: latest 
+          inspec-version: latest
+          kubectl-version: latest
+          sonobuoy-version: latest
+
+  alpine-no-sudo-versions:
+    docker:
+      - image: twdps/circleci-remote-docker:alpine-stable
+    steps:
+      - alpine-no-sudo-prep
+      - kube/packages:
+          use-sudo: false
+          argocd-version: 2.4.10
+          awspec-version: 1.28.0
+          bats-version: 1.7.0
+          datadog-version: 0.44.0
+          helm-version: 3.9.3
+          inspec-version: 5.18.14
+          istioctl-version: 1.14.3
+          kubectl-version: 1.24.3
+          sonobuoy-version: 0.56.10
+          terraform-version: 1.2.7
+
+  alpine-sudo-latest:
+    docker:
+      - image: twdps/circleci-kube-ops:alpine-stable
+    steps:
+      - alpine-sudo-prep
+      - kube/packages:
+          use-sudo: true
+          argocd-version: latest
+          awspec-version: latest
+          bats-version: latest
+          datadog-version: latest
+          helm-version: latest 
+          inspec-version: latest
+          kubectl-version: latest
+          sonobuoy-version: latest
+
+  alpine-sudo-versions:
+    docker:
+      - image: twdps/circleci-kube-ops:alpine-stable
+    steps:
+      - alpine-sudo-prep
+      - kube/packages:
+          use-sudo: true
+          argocd-version: 2.4.10
+          awspec-version: 1.28.0
+          bats-version: 1.7.0
+          datadog-version: 0.44.0
+          helm-version: 3.9.3
+          inspec-version: 5.18.14
+          istioctl-version: 1.14.3
+          kubectl-version: 1.24.3
+          sonobuoy-version: 0.56.10
+          terraform-version: 1.2.7
+
+  slim-no-sudo-latest:
+    docker:
+      - image: twdps/circleci-remote-docker:slim-stable
+    steps:
+      - slim-no-sudo-prep
+      - kube/packages:
+          use-sudo: false
+          argocd-version: latest
+          awspec-version: latest
+          bats-version: latest
+          datadog-version: latest
+          helm-version: latest 
+          inspec-version: latest
+          kubectl-version: latest
+          sonobuoy-version: latest
+
+  slim-no-sudo-versions:
+    docker:
+      - image: twdps/circleci-remote-docker:slim-stable
+    steps:
+      - slim-no-sudo-prep
+      - kube/packages:
+          use-sudo: false
+          argocd-version: 2.4.10
+          awspec-version: 1.28.0
+          bats-version: 1.7.0
+          datadog-version: 0.44.0
+          helm-version: 3.9.3
+          inspec-version: 5.18.14
+          istioctl-version: 1.14.3
+          kubectl-version: 1.24.3
+          sonobuoy-version: 0.56.10
+          terraform-version: 1.2.7
+
+  slim-sudo-latest:
+    docker:
+      - image: twdps/circleci-kube-ops:slim-stable
+    steps:
+      - slim-sudo-prep
+      - kube/packages:
+          use-sudo: true
+          argocd-version: latest
+          awspec-version: latest
+          bats-version: latest
+          datadog-version: latest
+          helm-version: latest 
+          inspec-version: latest
+          kubectl-version: latest
+          sonobuoy-version: latest
+
+  slim-sudo-versions:
+    docker:
+      - image: twdps/circleci-kube-ops:slim-stable
+    steps:
+      - slim-sudo-prep
+      - kube/packages:
+          use-sudo: true
+          argocd-version: 2.4.10
+          awspec-version: 1.28.0
+          bats-version: 1.7.0
+          datadog-version: 0.44.0
+          helm-version: 3.9.3
+          inspec-version: 5.18.14
+          istioctl-version: 1.14.3
+          kubectl-version: 1.24.3
+          sonobuoy-version: 0.56.10
+          terraform-version: 1.2.7
+
+  ubuntu-machine-latest:
+    machine:
+      image: ubuntu-2204:2022.07.1
+    shell: /bin/bash -eo pipefail
+    steps:
+      - kube/packages:
+          use-sudo: true
+          argocd-version: latest
+          datadog-version: latest
+          helm-version: latest 
+          kubectl-version: latest
+          sonobuoy-version: latest
+      - run:
+          name: install nokogiri as awspec dependency
+          command: gem install nokogiri
+      - kube/packages:
+          use-sudo: false
+          awspec-version: latest
+          bats-version: latest
+          inspec-version: latest
+
+  ubuntu-machine-versions:
+    machine:
+      image: ubuntu-2204:2022.07.1
+    shell: /bin/bash -eo pipefail
+    steps:
+      - kube/packages:
+          use-sudo: true
+          argocd-version: 2.4.10
+          datadog-version: 0.44.0
+          helm-version: 3.9.3
+          istioctl-version: 1.14.3
+          kubectl-version: 1.24.3
+          sonobuoy-version: 0.56.10
+          terraform-version: 1.2.7
+      - run:
+          name: install nokogiri as awspec dependency
+          command: gem install nokogiri
+      - kube/packages:
+          use-sudo: false
+          awspec-version: 1.28.0
+          bats-version: 1.7.0
+          inspec-version: 5.18.14
+
+workflows:
+  version: 2
+  integration-tests:
+    jobs:
+      - alpine-no-sudo-latest
+      - alpine-no-sudo-versions
+      - alpine-sudo-latest
+      - alpine-sudo-versions
+      - slim-no-sudo-latest
+      - slim-no-sudo-versions
+      - slim-sudo-latest
+      - slim-sudo-versions
+      - ubuntu-machine-latest
+      - ubuntu-machine-versions
