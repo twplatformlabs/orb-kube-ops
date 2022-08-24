@@ -13,17 +13,17 @@ dev-release-filter: &dev-release-filter
     ignore: /.*/
 
 jobs:
-  setup:
+  another:
     executor: continuation/default
     steps:
       - checkout
       - continuation/continue:
-          configuration_path: integration.yml
+          configuration_path: .circleci/integration.yml
 
 workflows:
   setup:
     jobs:
-      - setup:
+      - another:
           filters: *dev-release-filter
 
 
