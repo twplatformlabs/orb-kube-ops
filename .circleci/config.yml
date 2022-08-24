@@ -32,11 +32,16 @@ workflows:
           filters: *dev-release-filter
           requires:
             - orb-tools/validate
-            
+
       - integration-tests:
           filters: *dev-release-filter
 
-
+      - approve-release:
+          type: approval
+          requires:
+            - integration-tests
+          filters: *dev-release-filter
+          
 # ---
 # version: 2.1
 # setup: true
