@@ -11,7 +11,7 @@ description: >
     If no other gems installed, may need to install nokogiri as awspec dependency
   - bats install on circleci ubuntu machine images
     Must set use-sudo as false
-  - istioctl requires a version be specified, do not use `latest`
+  - terraform requires a version be specified, do not use `latest`
 
 parameters:
   use-sudo:
