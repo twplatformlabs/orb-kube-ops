@@ -61,8 +61,8 @@ workflows:
 
       - integration-tests:
           filters: *dev-release-filter
-          requires:
-            - orb-tools/publish-dev
+          # requires:
+          #   - orb-tools/publish-dev
 
       # - approve-release:
       #     type: approval
@@ -74,30 +74,30 @@ workflows:
   #   jobs:
       # patch, minor, or major publishing, depending on which orb source
       # files have been modified 
-      - orb-tools/promote-dev-to-prod:
-          name: patch-release
-          context: twdps-orb-authors
-          release: patch
-          orb-name: twdps/kube-ops
-          ssh-fingerprints: $SVC_FINGERPRINT
-          filters: *patch-tag-publish-filter
+      # - orb-tools/promote-dev-to-prod:
+      #     name: patch-release
+      #     context: twdps-orb-authors
+      #     release: patch
+      #     orb-name: twdps/kube-ops
+      #     ssh-fingerprints: $SVC_FINGERPRINT
+      #     filters: *patch-tag-publish-filter
 
-      - orb-tools/promote-dev-to-prod:
-          name: minor-release
-          context: twdps-orb-authors
-          release: minor
-          orb-name: twdps/kube-ops
-          ssh-fingerprints: $SVC_FINGERPRINT
-          filters: *minor-tag-publish-filter
+      # - orb-tools/promote-dev-to-prod:
+      #     name: minor-release
+      #     context: twdps-orb-authors
+      #     release: minor
+      #     orb-name: twdps/kube-ops
+      #     ssh-fingerprints: $SVC_FINGERPRINT
+      #     filters: *minor-tag-publish-filter
 
-      - orb-tools/promote-dev-to-prod:
-          name: major-release
-          context: twdps-orb-authors
-          release: major
-          orb-name: twdps/kube-ops
-          ssh-fingerprints: $SVC_FINGERPRINT
-          filters: *major-tag-publish-filter
+      # - orb-tools/promote-dev-to-prod:
+      #     name: major-release
+      #     context: twdps-orb-authors
+      #     release: major
+      #     orb-name: twdps/kube-ops
+      #     ssh-fingerprints: $SVC_FINGERPRINT
+      #     filters: *major-tag-publish-filter
 
-      - orb-tools/documentation-only:
-          name: documentation-updates
-          filters: *edit-tag-publish-filter
+      # - orb-tools/documentation-only:
+      #     name: documentation-updates
+      #     filters: *edit-tag-publish-filter
