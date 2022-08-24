@@ -41,7 +41,7 @@ jobs:
     executor: continuation/default
     steps:
       - continuation/continue:
-          configuration_path: .circleci/integration-tests.yml
+          configuration_path: integration-tests.yml
 
 workflows:
   version: 2
