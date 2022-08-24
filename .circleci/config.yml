@@ -59,11 +59,13 @@ workflows:
 
       - integration-tests:
           filters: *dev-release-filter
+          requires:
+            - orb-tools/publish-dev
 
       - approve-release:
           type: approval
           requires:
-            - orb-tools/publish-dev
+            - integration-tests
           filters: *dev-release-filter
 
 # ---
