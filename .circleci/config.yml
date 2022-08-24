@@ -69,8 +69,8 @@ workflows:
             - integration-tests
           filters: *dev-release-filter
 
-  promote-orb-kube-ops:
-    jobs:
+  # promote-orb-kube-ops:
+  #   jobs:
       # patch, minor, or major publishing, depending on which orb source
       # files have been modified 
       - orb-tools/promote-dev-to-prod:
