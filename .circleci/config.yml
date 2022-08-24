@@ -13,7 +13,7 @@ dev-release-filter: &dev-release-filter
     ignore: /.*/
 
 jobs:
-  another:
+  dev-release-kube-ops-orb:
     executor: continuation/default
     steps:
       - checkout
@@ -23,7 +23,7 @@ jobs:
 workflows:
   setup:
     jobs:
-      - another:
+      - dev-release-kube-ops-orb:
           filters: *dev-release-filter
 
 
