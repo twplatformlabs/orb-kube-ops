@@ -13,7 +13,7 @@ dev-release-filter: &dev-release-filter
     ignore: /.*/
 
 jobs:
-  dev-release-kube-ops-orb:
+  integration-tests:
     executor: continuation/default
     steps:
       - checkout
@@ -25,8 +25,15 @@ workflows:
     jobs:
       - orb-tools/validate:
           filters: *dev-release-filter
-          
-      - dev-release-kube-ops-orb:
+
+      - orb-tools/publish-dev:
+          context: twdps-orb-authors
+          orb-name: twdps/kube-ops
+          filters: *dev-release-filter
+          requires:
+            - orb-tools/validate
+            
+      - integration-tests:
           filters: *dev-release-filter
 
 
