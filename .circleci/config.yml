@@ -34,6 +34,8 @@ major-tag-publish-filter: &major-tag-publish-filter
   tags:
     only: /^major.*/
 
+# jobs:
+
 workflows:
   version: 2
 
@@ -61,6 +63,12 @@ workflows:
           filters: *dev-release-filter
           requires:
             - approve-release
+
+      # - integration-test:
+      #     context: twdps-orb-authors
+      #     filters: *dev-release-filter
+      #     requires:
+      #       - orb-tools/release-tag
 
   promote-orb-kube-ops:
     jobs:

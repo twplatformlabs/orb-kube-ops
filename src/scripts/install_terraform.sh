@@ -2,27 +2,16 @@
 
 function install() {
   echo "installing terraform ${1}"
-  wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
-  echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
-  apt update && apt install terraform=${1}
-}
-
-function install_latest() {
-  echo "installing terraform latest"
-  wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
-  echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
-  apt update && apt install terraform
+  curl -SLO "https://releases.hashicorp.com/terraform/${INSTALL_TERRAFORM_VERSION}/terraform_${INSTALL_TERRAFORM_VERSION}_linux_amd64.zip" > "terraform_${INSTALL_TERRAFORM_VERSION}_linux_amd64.zip"
+  unzip "terraform_${INSTALL_TERRAFORM_VERSION}_linux_amd64.zip" -d /usr/local/bin
 }
 
 echo "requested terraform ${INSTALL_TERRAFORM_VERSION}"
 echo "USE_SUDO = ${USE_SUDO}"
 
 if [[ $INSTALL_TERRAFORM_VERSION == "latest" ]]; then
-  if [ "$USE_SUDO" == 1 ]; then
-    sudo bash -c "$(declare -f install_latest); install_latest;"
-  else
-    install_latest
-  fi
+  echo "install of 'latest' not supported"
+  exit 1
 else
   if [ "$USE_SUDO" == 1 ]; then
     sudo bash -c "$(declare -f install); install ${INSTALL_TERRAFORM_VERSION};"
