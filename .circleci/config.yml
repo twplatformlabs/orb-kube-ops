@@ -41,7 +41,7 @@ jobs:
     executor: continuation/default
     steps:
       - continuation/continue:
-          configuration_path: integration.yml
+          configuration_path: .circleci/integration.yml
 
 workflows:
   version: 2
