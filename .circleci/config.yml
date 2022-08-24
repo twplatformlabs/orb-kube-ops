@@ -4,7 +4,7 @@ setup: true
 
 orbs:
   orb-tools: twdps/orb-tools@0.2.0
-  continuation: circleci/continuation@0.1.2
+  continuation: circleci/continuation@0.3.1
 
 dev-release-filter: &dev-release-filter
   branches:
