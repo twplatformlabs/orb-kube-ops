@@ -13,7 +13,7 @@ dev-release-filter: &dev-release-filter
     ignore: /.*/
 
 jobs:
-  anothername:
+  setup:
     executor: continuation/default
     steps:
       - checkout
@@ -23,7 +23,7 @@ jobs:
 workflows:
   setup:
     jobs:
-      - anothername:
+      - setup:
           filters: *dev-release-filter
 
 
