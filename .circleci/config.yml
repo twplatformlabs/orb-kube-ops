@@ -49,26 +49,26 @@ workflows:
   #dev-release-kube-ops-orb:
   setup:
     jobs:
-      - orb-tools/validate:
-          filters: *dev-release-filter
+      # - orb-tools/validate:
+      #     filters: *dev-release-filter
 
-      - orb-tools/publish-dev:
-          context: twdps-orb-authors
-          orb-name: twdps/kube-ops
-          filters: *dev-release-filter
-          requires:
-            - orb-tools/validate
+      # - orb-tools/publish-dev:
+      #     context: twdps-orb-authors
+      #     orb-name: twdps/kube-ops
+      #     filters: *dev-release-filter
+      #     requires:
+      #       - orb-tools/validate
 
       - integration-tests:
           filters: *dev-release-filter
           requires:
             - orb-tools/publish-dev
 
-      - approve-release:
-          type: approval
-          requires:
-            - integration-tests
-          filters: *dev-release-filter
+      # - approve-release:
+      #     type: approval
+      #     requires:
+      #       - integration-tests
+      #     filters: *dev-release-filter
 
   # promote-orb-kube-ops:
   #   jobs:
