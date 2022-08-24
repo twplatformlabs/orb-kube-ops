@@ -12,6 +12,30 @@ dev-release-filter: &dev-release-filter
   tags:
     ignore: /.*/
 
+edit-tag-publish-filter: &edit-tag-publish-filter
+  branches:
+    ignore: /.*/
+  tags:
+    only: /^edit.*/
+
+patch-tag-publish-filter: &patch-tag-publish-filter
+  branches:
+    ignore: /.*/
+  tags:
+    only: /^patch.*/
+
+minor-tag-publish-filter: &minor-tag-publish-filter
+  branches:
+    ignore: /.*/
+  tags:
+    only: /^minor.*/
+
+major-tag-publish-filter: &major-tag-publish-filter
+  branches:
+    ignore: /.*/
+  tags:
+    only: /^major.*/
+
 jobs:
   integration-tests:
     executor: continuation/default
@@ -39,9 +63,9 @@ workflows:
       - approve-release:
           type: approval
           requires:
-            - integration-tests
+            - orb-tools/publish-dev
           filters: *dev-release-filter
-          
+
 # ---
 # version: 2.1
 # setup: true
