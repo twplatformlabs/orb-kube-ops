@@ -1,5 +1,6 @@
 ---
 version: 2.1
+setup: true
 
 orbs:
   orb-tools: twdps/orb-tools@0.2.0
