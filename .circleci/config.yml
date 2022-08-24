@@ -1,103 +1,122 @@
----
 version: 2.1
-setup: true
 
+setup: true
+ 
 orbs:
-  orb-tools: twdps/orb-tools@0.2.0
   continuation: circleci/continuation@0.3.1
 
-dev-release-filter: &dev-release-filter
-  branches:
-    only: /main/
-  tags:
-    ignore: /.*/
-
-edit-tag-publish-filter: &edit-tag-publish-filter
-  branches:
-    ignore: /.*/
-  tags:
-    only: /^edit.*/
-
-patch-tag-publish-filter: &patch-tag-publish-filter
-  branches:
-    ignore: /.*/
-  tags:
-    only: /^patch.*/
-
-minor-tag-publish-filter: &minor-tag-publish-filter
-  branches:
-    ignore: /.*/
-  tags:
-    only: /^minor.*/
-
-major-tag-publish-filter: &major-tag-publish-filter
-  branches:
-    ignore: /.*/
-  tags:
-    only: /^major.*/
-
 jobs:
-  integration-tests:
+  setup:
     executor: continuation/default
     steps:
+      - checkout
       - continuation/continue:
-          configuration_path: ./integration.yml
+          configuration_path: integration.yml
 
 workflows:
-  version: 2
-
-  #dev-release-kube-ops-orb:
   setup:
     jobs:
-      # - orb-tools/validate:
-      #     filters: *dev-release-filter
+      - setup
 
-      # - orb-tools/publish-dev:
-      #     context: twdps-orb-authors
-      #     orb-name: twdps/kube-ops
-      #     filters: *dev-release-filter
-      #     requires:
-      #       - orb-tools/validate
+# ---
+# version: 2.1
+# setup: true
 
-      - integration-tests:
-          filters: *dev-release-filter
-          # requires:
-          #   - orb-tools/publish-dev
+# orbs:
+#   orb-tools: twdps/orb-tools@0.2.0
+#   continuation: circleci/continuation@0.3.1
 
-      # - approve-release:
-      #     type: approval
-      #     requires:
-      #       - integration-tests
-      #     filters: *dev-release-filter
+# dev-release-filter: &dev-release-filter
+#   branches:
+#     only: /main/
+#   tags:
+#     ignore: /.*/
 
-  # promote-orb-kube-ops:
-  #   jobs:
-      # patch, minor, or major publishing, depending on which orb source
-      # files have been modified 
-      # - orb-tools/promote-dev-to-prod:
-      #     name: patch-release
-      #     context: twdps-orb-authors
-      #     release: patch
-      #     orb-name: twdps/kube-ops
-      #     ssh-fingerprints: $SVC_FINGERPRINT
-      #     filters: *patch-tag-publish-filter
+# edit-tag-publish-filter: &edit-tag-publish-filter
+#   branches:
+#     ignore: /.*/
+#   tags:
+#     only: /^edit.*/
 
-      # - orb-tools/promote-dev-to-prod:
-      #     name: minor-release
-      #     context: twdps-orb-authors
-      #     release: minor
-      #     orb-name: twdps/kube-ops
-      #     ssh-fingerprints: $SVC_FINGERPRINT
-      #     filters: *minor-tag-publish-filter
+# patch-tag-publish-filter: &patch-tag-publish-filter
+#   branches:
+#     ignore: /.*/
+#   tags:
+#     only: /^patch.*/
 
-      # - orb-tools/promote-dev-to-prod:
-      #     name: major-release
-      #     context: twdps-orb-authors
-      #     release: major
-      #     orb-name: twdps/kube-ops
-      #     ssh-fingerprints: $SVC_FINGERPRINT
-      #     filters: *major-tag-publish-filter
+# minor-tag-publish-filter: &minor-tag-publish-filter
+#   branches:
+#     ignore: /.*/
+#   tags:
+#     only: /^minor.*/
 
-      # - orb-tools/documentation-only:
-      #     name: documentation-updates
-      #     filters: *edit-tag-publish-filter
+# major-tag-publish-filter: &major-tag-publish-filter
+#   branches:
+#     ignore: /.*/
+#   tags:
+#     only: /^major.*/
+
+# jobs:
+#   integration-tests:
+#     executor: continuation/default
+#     steps:
+#       - continuation/continue:
+#           configuration_path: ./integration.yml
+
+# workflows:
+#   version: 2
+
+#   dev-release-kube-ops-orb:
+#     jobs:
+#       - orb-tools/validate:
+#           filters: *dev-release-filter
+
+#       - orb-tools/publish-dev:
+#           context: twdps-orb-authors
+#           orb-name: twdps/kube-ops
+#           filters: *dev-release-filter
+#           requires:
+#             - orb-tools/validate
+
+#       - integration-tests:
+#           filters: *dev-release-filter
+#           requires:
+#             - orb-tools/publish-dev
+
+#       - approve-release:
+#           type: approval
+#           requires:
+#             - integration-tests
+#           filters: *dev-release-filter
+
+#   promote-orb-kube-ops:
+#     jobs:
+#       # patch, minor, or major publishing, depending on which orb source
+#       # files have been modified 
+#       - orb-tools/promote-dev-to-prod:
+#           name: patch-release
+#           context: twdps-orb-authors
+#           release: patch
+#           orb-name: twdps/kube-ops
+#           ssh-fingerprints: $SVC_FINGERPRINT
+#           filters: *patch-tag-publish-filter
+
+#       - orb-tools/promote-dev-to-prod:
+#           name: minor-release
+#           context: twdps-orb-authors
+#           release: minor
+#           orb-name: twdps/kube-ops
+#           ssh-fingerprints: $SVC_FINGERPRINT
+#           filters: *minor-tag-publish-filter
+
+#       - orb-tools/promote-dev-to-prod:
+#           name: major-release
+#           context: twdps-orb-authors
+#           release: major
+#           orb-name: twdps/kube-ops
+#           ssh-fingerprints: $SVC_FINGERPRINT
+#           filters: *major-tag-publish-filter
+
+#       - orb-tools/documentation-only:
+#           name: documentation-updates
+#           filters: *edit-tag-publish-filter
