@@ -65,7 +65,7 @@ workflows:
       - approve-release:
           type: approval
           requires:
-            - integration-tests
+            - orb-tools/publish-dev
           filters: *dev-release-filter
 
       - orb-tools/release-tag:
