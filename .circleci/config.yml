@@ -57,10 +57,10 @@ workflows:
           requires:
             - orb-tools/validate
 
-      - integration-tests:
-          filters: *dev-release-filter
-          requires:
-            - orb-tools/publish-dev
+      # - integration-tests:
+      #     filters: *dev-release-filter
+      #     requires:
+      #       - orb-tools/publish-dev
 
       - approve-release:
           type: approval
@@ -74,7 +74,7 @@ workflows:
           filters: *dev-release-filter
           requires:
             - approve-release
-            
+
       - orb-tools/promote-dev-to-prod:
           name: patch-release
           context: twdps-orb-authors
