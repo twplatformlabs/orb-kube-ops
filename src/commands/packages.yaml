@@ -5,15 +5,15 @@ description: >
 
   Notes:
   - packages based on gem, pip, or npm assume the underlying dependencies have been installed
-    this includes haveing gcc, make or other package build requirements available
-  - awspec install on circleci ubuntu machine images
+    this includes gcc, make or other package build requirements
+  - for awspec install on circleci ubuntu machine images
     Must set use-sudo as false
     If not already installed, may need to install nokogiri as awspec dependency
-  - bats install on circleci ubuntu machine images
+  - for bats install on circleci ubuntu machine images
     Must set use-sudo as false
   - sonobuoy install depends on jq
-  - terraform requires a specific version, does support latest
-  - istioctl requires a specific version, does support latest
+  - terraform requires a specific version, does not support latest
+  - istioctl requires a specific version, does not support latest
 
 parameters:
   use-sudo:

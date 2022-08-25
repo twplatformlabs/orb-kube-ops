@@ -57,11 +57,6 @@ workflows:
           requires:
             - orb-tools/validate
 
-      # - integration-tests:
-      #     filters: *dev-release-filter
-      #     requires:
-      #       - orb-tools/publish-dev
-
       - approve-release:
           type: approval
           requires:
@@ -74,6 +69,11 @@ workflows:
           filters: *dev-release-filter
           requires:
             - approve-release
+
+      - integration-tests:
+          filters: *dev-release-filter
+          requires:
+            - orb-tools/release-tag
 
       - orb-tools/promote-dev-to-prod:
           name: patch-release
