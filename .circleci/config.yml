@@ -68,6 +68,13 @@ workflows:
             - integration-tests
           filters: *dev-release-filter
 
+      - orb-tools/release-tag:
+          context: twdps-orb-authors
+          ssh-fingerprints: $SVC_FINGERPRINT
+          filters: *dev-release-filter
+          requires:
+            - approve-release
+            
       - orb-tools/promote-dev-to-prod:
           name: patch-release
           context: twdps-orb-authors
