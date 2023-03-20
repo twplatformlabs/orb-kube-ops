@@ -2,13 +2,13 @@
 
 function install() {
   echo "installing datadog ${1}"
-  pip install datadog==${1} --break-system-packages
+  pip install --no-cache-dir --break-system-packages datadog==${1} 
 
 }
 
 function install_latest() {
   echo "installing datadog latest"
-  pip install datadog --break-system-packages
+  pip install --no-cache-dir --break-system-packages datadog
 }
 
 echo "requested datadog ${INSTALL_DATADOG_VERSION}"
