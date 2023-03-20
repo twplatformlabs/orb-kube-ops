@@ -120,7 +120,7 @@ jobs:
           use-sudo: false
           argocd-version: 2.6.6
           awspec-version: 1.29.0
-          bats-version: 1.90
+          bats-version: 1.9.0
           helm-version: 3.11.2
           inspec-version: 5.21.29
           istioctl-version: 1.17.0
@@ -154,7 +154,7 @@ jobs:
           use-sudo: true
           argocd-version: 2.6.6
           awspec-version: 1.29.0
-          bats-version: 1.90
+          bats-version: 1.9.0
           helm-version: 3.11.2
           inspec-version: 5.21.29
           istioctl-version: 1.17.0
@@ -188,7 +188,7 @@ jobs:
           use-sudo: false
           argocd-version: 2.6.6
           awspec-version: 1.29.0
-          bats-version: 1.90
+          bats-version: 1.9.0
           helm-version: 3.11.2
           inspec-version: 5.21.29
           istioctl-version: 1.17.0
@@ -222,7 +222,7 @@ jobs:
           use-sudo: true
           argocd-version: 2.6.6
           awspec-version: 1.29.0
-          bats-version: 1.90
+          bats-version: 1.9.0
           helm-version: 3.11.2
           inspec-version: 5.21.29
           istioctl-version: 1.17.0
@@ -272,7 +272,7 @@ jobs:
       - kube/packages:
           use-sudo: false
           awspec-version: 1.29.0
-          bats-version: 1.90
+          bats-version: 1.9.0
           inspec-version: 5.21.29
 
 workflows:
