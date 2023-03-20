@@ -49,9 +49,6 @@ parameters:
   terraform-version:
     type: string
     default: blank
-  datadog-version:
-    type: string
-    default: blank
   kind-version:
     type: string
     default: blank
@@ -150,16 +147,6 @@ steps:
               USE_SUDO: << parameters.use-sudo >>
               INSTALL_TERRAFORM_VERSION: << parameters.terraform-version >>
             command: <<include(scripts/install_terraform.sh)>>
-  - unless:
-      condition:
-        equal: [ << parameters.datadog-version >>, "blank" ]
-      steps:
-        - run:
-            name: install datadog cli << parameters.datadog-version >>
-            environment:
-              USE_SUDO: << parameters.use-sudo >>
-              INSTALL_DATADOG_VERSION: << parameters.datadog-version >>
-            command: <<include(scripts/install_datadog.sh)>>
   - unless:
       condition:
         equal: [ << parameters.kind-version >>, "blank" ]
