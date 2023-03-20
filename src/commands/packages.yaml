@@ -8,8 +8,7 @@ description: >
     this includes gcc, make or other package build requirements
   - for awspec install on circleci ubuntu machine images
     Must set use-sudo as false. May need to install nokogiri as awspec dependency
-  - for bats install on circleci ubuntu machine images
-    Must set use-sudo as false
+  - for bats install on circleci ubuntu machine images, must set use-sudo as false
   - sonobuoy install depends on jq
   - terraform requires a specific version, does not support latest
   - istioctl requires a specific version, does not support latest

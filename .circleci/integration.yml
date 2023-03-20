@@ -118,16 +118,16 @@ jobs:
       - alpine-no-sudo-prep
       - kube/packages:
           use-sudo: false
-          argocd-version: 2.4.10
-          awspec-version: 1.28.0
-          bats-version: 1.7.0
-          helm-version: 3.9.3
-          inspec-version: 5.18.14
-          istioctl-version: 1.14.3
-          kubectl-version: 1.24.3
-          sonobuoy-version: 0.56.10
-          terraform-version: 1.2.7
-          kind-version: 0.14.0
+          argocd-version: 2.6.6
+          awspec-version: 1.29.0
+          bats-version: 1.90
+          helm-version: 3.11.2
+          inspec-version: 5.21.29
+          istioctl-version: 1.17.0
+          kubectl-version: 1.26.2
+          sonobuoy-version: 0.56.16
+          terraform-version: 1.4.2
+          kind-version: 0.17.0
 
   alpine-sudo-latest:
     docker:
@@ -152,16 +152,16 @@ jobs:
       - alpine-sudo-prep
       - kube/packages:
           use-sudo: true
-          argocd-version: 2.4.10
-          awspec-version: 1.28.0
-          bats-version: 1.7.0
-          helm-version: 3.9.3
-          inspec-version: 5.18.14
-          istioctl-version: 1.14.3
-          kubectl-version: 1.24.3
-          sonobuoy-version: 0.56.10
-          terraform-version: 1.2.7
-          kind-version: 0.14.0
+          argocd-version: 2.6.6
+          awspec-version: 1.29.0
+          bats-version: 1.90
+          helm-version: 3.11.2
+          inspec-version: 5.21.29
+          istioctl-version: 1.17.0
+          kubectl-version: 1.26.2
+          sonobuoy-version: 0.56.16
+          terraform-version: 1.4.2
+          kind-version: 0.17.0
 
   slim-no-sudo-latest:
     docker:
@@ -186,16 +186,16 @@ jobs:
       - slim-no-sudo-prep
       - kube/packages:
           use-sudo: false
-          argocd-version: 2.4.10
-          awspec-version: 1.28.0
-          bats-version: 1.7.0
-          helm-version: 3.9.3
-          inspec-version: 5.18.14
-          istioctl-version: 1.14.3
-          kubectl-version: 1.24.3
-          sonobuoy-version: 0.56.10
-          terraform-version: 1.2.7
-          kind-version: 0.14.0
+          argocd-version: 2.6.6
+          awspec-version: 1.29.0
+          bats-version: 1.90
+          helm-version: 3.11.2
+          inspec-version: 5.21.29
+          istioctl-version: 1.17.0
+          kubectl-version: 1.26.2
+          sonobuoy-version: 0.56.16
+          terraform-version: 1.4.2
+          kind-version: 0.17.0
 
   slim-sudo-latest:
     docker:
@@ -220,16 +220,16 @@ jobs:
       - slim-sudo-prep
       - kube/packages:
           use-sudo: true
-          argocd-version: 2.4.10
-          awspec-version: 1.28.0
-          bats-version: 1.7.0
-          helm-version: 3.9.3
-          inspec-version: 5.18.14
-          istioctl-version: 1.14.3
-          kubectl-version: 1.24.3
-          sonobuoy-version: 0.56.10
-          terraform-version: 1.2.7
-          kind-version: 0.14.0
+          argocd-version: 2.6.6
+          awspec-version: 1.29.0
+          bats-version: 1.90
+          helm-version: 3.11.2
+          inspec-version: 5.21.29
+          istioctl-version: 1.17.0
+          kubectl-version: 1.26.2
+          sonobuoy-version: 0.56.16
+          terraform-version: 1.4.2
+          kind-version: 0.17.0
 
   ubuntu-machine-latest:
     machine:
@@ -259,21 +259,21 @@ jobs:
     steps:
       - kube/packages:
           use-sudo: true
-          argocd-version: 2.4.10
-          helm-version: 3.9.3
-          istioctl-version: 1.14.3
-          kubectl-version: 1.24.3
-          sonobuoy-version: 0.56.10
-          terraform-version: 1.2.7
-          kind-version: 0.14.0
+          argocd-version: 2.6.6
+          helm-version: 3.11.2
+          istioctl-version: 1.17.0
+          kubectl-version: 1.26.2
+          sonobuoy-version: 0.56.16
+          terraform-version: 1.4.2
+          kind-version: 0.17.0
       - run:
           name: install nokogiri as awspec dependency
           command: gem install nokogiri
       - kube/packages:
           use-sudo: false
-          awspec-version: 1.28.0
-          bats-version: 1.7.0
-          inspec-version: 5.18.14
+          awspec-version: 1.29.0
+          bats-version: 1.90
+          inspec-version: 5.21.29
 
 workflows:
   version: 2
