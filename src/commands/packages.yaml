@@ -7,8 +7,7 @@ description: >
   - packages based on gem, pip, or npm assume the underlying dependencies have been installed
     this includes gcc, make or other package build requirements
   - for awspec install on circleci ubuntu machine images
-    Must set use-sudo as false
-    If not already installed, may need to install nokogiri as awspec dependency
+    Must set use-sudo as false. May need to install nokogiri as awspec dependency
   - for bats install on circleci ubuntu machine images
     Must set use-sudo as false
   - sonobuoy install depends on jq
