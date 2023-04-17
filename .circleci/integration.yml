@@ -124,7 +124,7 @@ jobs:
           helm-version: 3.11.2
           inspec-version: 5.21.29
           istioctl-version: 1.17.0
-          kubectl-version: 1.26.2
+          kubectl-version:  
           sonobuoy-version: 0.56.16
           terraform-version: 1.4.2
           kind-version: 0.17.0
