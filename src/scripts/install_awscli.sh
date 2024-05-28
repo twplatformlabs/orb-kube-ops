@@ -3,7 +3,7 @@ set -eo pipefail
 
 function install() {
   echo "installing awscli ${1}"
-  pip install awscli==${1}
+  pip install awscli=="${1}"
 
 }
 

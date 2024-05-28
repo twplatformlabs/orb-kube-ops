@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 InstallDependencies() {
   if [ "$USE_SUDO" == 1 ]; then export SUDO=""; else # Check if we're root
     export SUDO="sudo";
