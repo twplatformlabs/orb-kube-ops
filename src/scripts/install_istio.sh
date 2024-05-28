@@ -10,7 +10,7 @@ function install() {
 echo "requested istioctl ${INSTALL_ISTIOCTL_VERSION}"
 echo "USE_SUDO = ${USE_SUDO}"
 
-if [[ "$INSTALL_ISTIOCTL_VERSION " == "latest" ]]; then
+if [[ "$INSTALL_ISTIOCTL_VERSION" == "latest" ]]; then
   echo "install of 'latest' not supported"
   exit 1
 else
