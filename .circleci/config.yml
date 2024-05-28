@@ -41,28 +41,28 @@ workflows:
       - orb-tools/pack:
           filters: *on-push-main
 
-      # - orb-tools/publish:
-      #     name: publish development package
-      #     context: *context
-      #     orb_name: *orb-name
-      #     vcs_type: << pipeline.project.type >>
-      #     filters: *on-push-main
-      #     requires:
-      #       - orb-tools/lint
-      #       - orb-tools/review
-      #       - shellcheck/check
-      #       - orb-tools/pack
+      - orb-tools/publish:
+          name: publish development package
+          context: *context
+          orb_name: *orb-name
+          vcs_type: << pipeline.project.type >>
+          filters: *on-push-main
+          requires:
+            - orb-tools/lint
+            - orb-tools/review
+            - shellcheck/check
+            - orb-tools/pack
 
-      # - orb-tools/continue:
-      #     name: Launch integration test pipeline
-      #     context: *context
-      #     orb_name: *orb-name
-      #     config_path: .circleci/integration-test.yml
-      #     pipeline_number: << pipeline.number >>
-      #     vcs_type: << pipeline.project.type >>
-      #     filters: *on-push-main
-      #     requires:
-      #       - publish development package
+      - orb-tools/continue:
+          name: Launch integration test pipeline
+          context: *context
+          orb_name: *orb-name
+          config_path: .circleci/integration-test.yml
+          pipeline_number: << pipeline.number >>
+          vcs_type: << pipeline.project.type >>
+          filters: *on-push-main
+          requires:
+            - publish development package
 
   release:
     jobs:
