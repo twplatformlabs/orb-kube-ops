@@ -2,290 +2,58 @@
 version: 2.1
 
 orbs:
-  kube: twdps/kube-ops@dev:latest
+  kube: twdps/kube-ops@dev:<<pipeline.git.revision>>
+  op: twdps/onepassword@3.0.0
 
-commands:
-  alpine-no-sudo-prep:
-    steps:
-      - run:
-          name: add dependencies to circleci-remote-docker image
-          command: |
-            apk add --no-cache curl bash build-base gcc g++ make jq unzip
-
-            echo 'install ruby'
-            apk add --no-cache ruby ruby-dev ruby-webrick ruby-bundler
-
-            echo 'install python'
-            apk add --no-cache python3 python3-dev libffi-dev
-            python3 -m ensurepip
-            rm -r /usr/lib/python*/ensurepip
-            pip3 install --upgrade pip
-            if [ ! -e /usr/bin/pip ]; then ln -s /usr/bin/pip3 /usr/bin/pip ; fi
-            ln -s -f /usr/bin/pydoc3 /usr/bin/pydoc
-            ln -s -f /usr/bin/python3 /usr/bin/python
-            ln -s -f /usr/bin/python3-config /usr/bin/python-config
-
-            echo 'install nodejs/npm'
-            apk add --no-cache nodejs npm 
-
-  alpine-sudo-prep:
-    steps:
-      - run:
-          name: add dependencies to circleci-remote-docker image
-          command: |
-            sudo apk add --no-cache curl bash build-base gcc g++ make jq unzip
-            
-            echo 'install ruby'
-            sudo apk add --no-cache ruby ruby-dev ruby-webrick ruby-bundler
-
-            echo 'install python'
-            sudo apk add --no-cache python3 python3-dev libffi-dev
-            sudo python3 -m ensurepip
-            sudo rm -r /usr/lib/python*/ensurepip
-            sudo pip3 install --upgrade pip
-            if [ ! -e /usr/bin/pip ]; then sudo ln -s /usr/bin/pip3 /usr/bin/pip ; fi
-            sudo ln -s -f /usr/bin/pydoc3 /usr/bin/pydoc
-            sudo ln -s -f /usr/bin/python3 /usr/bin/python
-            sudo ln -s -f /usr/bin/python3-config /usr/bin/python-config
-
-            echo 'install nodejs/npm'
-            sudo apk add --no-cache nodejs npm 
-
-  slim-no-sudo-prep:
-    steps:
-      - run:
-          name: add dependencies to circleci-remote-docker image
-          command: |
-            apt-get update && apt-get install --no-install-recommends -y curl bash gcc g++ make jq unzip
-
-            echo 'install ruby'
-            apt-get install --no-install-recommends -y ruby-full 
-
-            echo 'install python'
-            apt-get install --no-install-recommends -y python3-dev python3-pip python3-venv
-            ln -f -s /usr/bin/pip3 /usr/bin/pip
-            ln -s -f /usr/bin/pydoc3 /usr/bin/pydoc
-            ln -s -f /usr/bin/python3 /usr/bin/python
-            ln -s -f /usr/bin/python3-config /usr/bin/python-config
-
-            echo 'install nodejs/npm'
-            bash -c "curl -sL https://deb.nodesource.com/setup_16.x | bash - "
-            apt-get install --no-install-recommends -y nodejs npm 
-
-  slim-sudo-prep:
-    steps:
-      - run:
-          name: add dependencies to circleci-remote-docker image
-          command: |
-            sudo apt-get update && sudo apt-get install --no-install-recommends -y curl bash gcc g++ make jq unzip
-
-            echo 'install ruby'
-            sudo apt-get install --no-install-recommends -y ruby-full 
-
-            echo 'install python'
-            sudo apt-get install --no-install-recommends -y python3-dev python3-pip python3-venv
-            sudo ln -f -s /usr/bin/pip3 /usr/bin/pip
-            sudo ln -s -f /usr/bin/pydoc3 /usr/bin/pydoc
-            sudo ln -s -f /usr/bin/python3 /usr/bin/python
-            sudo ln -s -f /usr/bin/python3-config /usr/bin/python-config
-
-            echo 'install nodejs/npm'
-            sudo bash -c "curl -sL https://deb.nodesource.com/setup_16.x | bash - "
-            sudo apt-get install --no-install-recommends -y nodejs npm 
-
+globals:
+  - &context orb-publishing
+  - &shell op run --env-file op.env -- /bin/bash -eo pipefail
 
 jobs:
-  alpine-no-sudo-latest:
-    docker:
-      - image: twdps/circleci-remote-docker:alpine-stable
-    steps:
-      - alpine-no-sudo-prep
-      - kube/packages:
-          use-sudo: false
-          argocd-version: latest
-          awspec-version: latest
-          bats-version: latest
-          helm-version: latest 
-          inspec-version: latest
-          kubectl-version: latest
-          sonobuoy-version: latest
-          kind-version: latest
 
-  alpine-no-sudo-versions:
-    docker:
-      - image: twdps/circleci-remote-docker:alpine-stable
-    steps:
-      - alpine-no-sudo-prep
-      - kube/packages:
-          use-sudo: false
-          argocd-version: 2.6.6
-          awspec-version: 1.29.0
-          bats-version: 1.9.0
-          helm-version: 3.11.2
-          inspec-version: 5.21.29
-          istioctl-version: 1.17.0
-          kubectl-version:  
-          sonobuoy-version: 0.56.16
-          terraform-version: 1.4.2
-          kind-version: 0.17.0
-
-  alpine-sudo-latest:
-    docker:
-      - image: twdps/circleci-kube-ops:alpine-stable
-    steps:
-      - alpine-sudo-prep
-      - kube/packages:
-          use-sudo: true
-          argocd-version: latest
-          awspec-version: latest
-          bats-version: latest
-          helm-version: latest 
-          inspec-version: latest
-          kubectl-version: latest
-          sonobuoy-version: latest
-          kind-version: latest
-
-  alpine-sudo-versions:
-    docker:
-      - image: twdps/circleci-kube-ops:alpine-stable
-    steps:
-      - alpine-sudo-prep
-      - kube/packages:
-          use-sudo: true
-          argocd-version: 2.6.6
-          awspec-version: 1.29.0
-          bats-version: 1.9.0
-          helm-version: 3.11.2
-          inspec-version: 5.21.29
-          istioctl-version: 1.17.0
-          kubectl-version: 1.26.2
-          sonobuoy-version: 0.56.16
-          terraform-version: 1.4.2
-          kind-version: 0.17.0
-
-  slim-no-sudo-latest:
-    docker:
-      - image: twdps/circleci-remote-docker:slim-stable
-    steps:
-      - slim-no-sudo-prep
-      - kube/packages:
-          use-sudo: false
-          argocd-version: latest
-          awspec-version: latest
-          bats-version: latest
-          helm-version: latest 
-          inspec-version: latest
-          kubectl-version: latest
-          sonobuoy-version: latest
-          kind-version: latest
-
-  slim-no-sudo-versions:
-    docker:
-      - image: twdps/circleci-remote-docker:slim-stable
-    steps:
-      - slim-no-sudo-prep
-      - kube/packages:
-          use-sudo: false
-          argocd-version: 2.6.6
-          awspec-version: 1.29.0
-          bats-version: 1.9.0
-          helm-version: 3.11.2
-          inspec-version: 5.21.29
-          istioctl-version: 1.17.0
-          kubectl-version: 1.26.2
-          sonobuoy-version: 0.56.16
-          terraform-version: 1.4.2
-          kind-version: 0.17.0
-
-  slim-sudo-latest:
-    docker:
-      - image: twdps/circleci-kube-ops:slim-stable
-    steps:
-      - slim-sudo-prep
-      - kube/packages:
-          use-sudo: true
-          argocd-version: latest
-          awspec-version: latest
-          bats-version: latest
-          helm-version: latest 
-          inspec-version: latest
-          kubectl-version: latest
-          sonobuoy-version: latest
-          kind-version: latest
-
-  slim-sudo-versions:
-    docker:
-      - image: twdps/circleci-kube-ops:slim-stable
-    steps:
-      - slim-sudo-prep
-      - kube/packages:
-          use-sudo: true
-          argocd-version: 2.6.6
-          awspec-version: 1.29.0
-          bats-version: 1.9.0
-          helm-version: 3.11.2
-          inspec-version: 5.21.29
-          istioctl-version: 1.17.0
-          kubectl-version: 1.26.2
-          sonobuoy-version: 0.56.16
-          terraform-version: 1.4.2
-          kind-version: 0.17.0
-
-  ubuntu-machine-latest:
+  test package install:
     machine:
-      image: ubuntu-2204:2022.07.1
-    shell: /bin/bash -eo pipefail
+      image: ubuntu-2204:current
+    resource_class: medium
     steps:
-      - kube/packages:
-          use-sudo: true
-          argocd-version: latest
-          helm-version: latest 
-          kubectl-version: latest
-          sonobuoy-version: latest
-          kind-version: latest
+      - checkout
+      - kube/install:
+          kubectl-version: 1.30.1
+          kind-version: 0.23.0
+          awscli-version: 1.32.25
+          istio-version: 1.22.0
+          argocd-version: 2.11.0
+          flux-version: 2.3.0
+          helm-version: 3.15.0
+          circlepipe-version: 0.3.2
+          px-version: 0.8.2
+          terraform-version: 1.8.3
+          bats-version: 1.11.0
+          awspec-version: 1.30.0
+          inspec-version: 5.22.36
+          checkov-version: 3.2.28
+          trivy-version: 0.51.1
       - run:
-          name: install nokogiri as awspec dependency
-          command: gem install nokogiri
-      - kube/packages:
-          use-sudo: false
-          awspec-version: latest
-          bats-version: latest
-          inspec-version: latest
-
-  ubuntu-machine-versions:
-    machine:
-      image: ubuntu-2204:2022.07.1
-    shell: /bin/bash -eo pipefail
-    steps:
-      - kube/packages:
-          use-sudo: true
-          argocd-version: 2.6.6
-          helm-version: 3.11.2
-          istioctl-version: 1.17.0
-          kubectl-version: 1.26.2
-          sonobuoy-version: 0.56.16
-          terraform-version: 1.4.2
-          kind-version: 0.17.0
-      - run:
-          name: install nokogiri as awspec dependency
-          command: gem install nokogiri
-      - kube/packages:
-          use-sudo: false
-          awspec-version: 1.29.0
-          bats-version: 1.9.0
-          inspec-version: 5.21.29
+          name: confirm installed version
+          command: |
+            set -exo pipefail
+            kubectl version --client=true --short=true | grep '1.30.1'
+            aws --version | grep '1.32.25'
+            istioctl version --short --remote=false | grep '1.22.0'
+            argocd version --client | grep '2.11.0'
+            flux version --client | grep '2.3.0'
+            helm version --short | grep '3.15.0'
+            circlepipe version | grep '0.3.2'
+            px --version | grep '0.8.2'
+            terraform version | grep '1.8.3'
+            bats --version | grep '1.11.0'
+            awspec --version | grep '1.30.0'
+            inspec --version | grep '5.22.36'
+            checkov --version | grep '3.2.28'
+            trivy version | grep '0.51.1'
 
 workflows:
-  version: 2
-  integration-tests:
+
+  integration tests:
     jobs:
-      - alpine-no-sudo-latest
-      - alpine-no-sudo-versions
-      - alpine-sudo-latest
-      - alpine-sudo-versions
-      - slim-no-sudo-latest
-      - slim-no-sudo-versions
-      - slim-sudo-latest
-      - slim-sudo-versions
-      - ubuntu-machine-latest
-      - ubuntu-machine-versions
+      - test package install

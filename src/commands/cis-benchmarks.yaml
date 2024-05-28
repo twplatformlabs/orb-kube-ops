@@ -1,5 +1,6 @@
 # src/commands/kube-bench.yaml
-
+# yamllint disable rule:line-length
+---
 description: Run aquasecurity CIS Kubernetes benchmark tests
 
 parameters:
@@ -8,7 +9,7 @@ parameters:
     description: Required, benchmark to run. Use full for fully self-managed control plan
     type: enum
     enum: ["eks", "aks", "gke", "full"]
-  
+
   namespace:
     description: deploy kube-bench pod to this namespace.
     type: string
@@ -17,28 +18,28 @@ parameters:
 steps:
   - when:
       condition:
-        equal: [ << parameters.benchmark >>, "aks" ]
+        equal: [<< parameters.benchmark >>, "aks"]
       steps:
         - run:
             name: use CIS Azure AKS benchmarks
             command: <<include(scripts/benchmark_aks.sh)>>
   - when:
       condition:
-        equal: [ << parameters.benchmark >>, "eks" ]
+        equal: [<< parameters.benchmark >>, "eks"]
       steps:
         - run:
             name: use CIS AWS EKS benchmarks
             command: <<include(scripts/benchmark_eks.sh)>>
   - when:
       condition:
-        equal: [ << parameters.benchmark >>, "gke" ]
+        equal: [<< parameters.benchmark >>, "gke"]
       steps:
         - run:
             name: use CIS Google Cloud Platform GKE benchmarks
             command: <<include(scripts/benchmark_gke.sh)>>
   - when:
       condition:
-        equal: [ << parameters.benchmark >>, "full" ]
+        equal: [<< parameters.benchmark >>, "full"]
       steps:
         - run:
             name: use CIS Kubernetes (generic) benchmarks

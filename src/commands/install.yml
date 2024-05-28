@@ -1,0 +1,228 @@
+# src/commands/install.yml
+# yamllint disable rule:line-length
+---
+
+description: |
+  Install specified package versions on executor for orb dependencies.
+  This is optional with the use of a twdps/circleci-kube-ops convenience
+  image. Each package-version parameter below can be used to install
+  a specific version of the named package. If left blank the command will
+  not attempt to install anything.
+
+  Supported packages:
+  - kubectl
+  - kind
+  - awscli
+  - argocd
+  - flux
+  - helm
+  - circlepipe
+  - px
+  - bats
+  - awspec
+  - inspec
+  - checkov
+  - trivy
+
+parameters:
+
+  use-sudo:
+    description: package needs to be installed with elevated privileges
+    type: boolean
+    default: false
+
+  kubectl-version:
+    type: string
+    default: ""
+  kind-version:
+    type: string
+    default: ""
+  awscli-version:
+    type: string
+    default: ""
+  istio-version:
+    type: string
+    default: ""
+  argocd-version:
+    type: string
+    default: ""
+  flux-version:
+    type: string
+    default: ""
+  helm-version:
+    type: string
+    default: ""
+  circlepipe-version:
+    type: string
+    default: ""
+  px-version:
+    type: string
+    default: ""
+  terraform-version:
+    type: string
+    default: ""
+  bats-version:
+    type: string
+    default: ""
+  awspec-version:
+    type: string
+    default: ""
+  inspec-version:
+    type: string
+    default: ""
+  checkov-version:
+    type: string
+    default: ""
+  trivy-version:
+    type: string
+    default: ""
+
+steps:
+
+  - run:
+      name: confirm dependencies
+      command: <<include(scripts/dependencies.sh)>>
+
+  - when:
+      condition: << parameters.kubectl-version >>
+      steps:
+        - run:
+            name: install kubectl version << parameters.kubectl-version >>
+            environment:
+              USE_SUDO: << parameters.use-sudo >>
+              KUBECTL_VERSION: << parameters.kubectl-version >>
+            command: <<include(scripts/install_kubectl.sh)>>
+
+  - when:
+      condition: << parameters.kind-version >>
+      steps:
+        - run:
+            name: install kind cli << parameters.kind-version >>
+            environment:
+              USE_SUDO: << parameters.use-sudo >>
+              INSTALL_KIND_VERSION: << parameters.kind-version >>
+            command: <<include(scripts/install_kind.sh)>>
+
+  - when:
+      condition: << parameters.awscli-version >>
+      steps:
+        - run:
+            name: install awscli << parameters.awscli-version >>
+            environment:
+              USE_SUDO: << parameters.use-sudo >>
+              INSTALL_AWSCLI_VERSION: << parameters.awscli-version >>
+            command: <<include(scripts/install_awscli.sh)>>
+
+  - when:
+      condition: << parameters.istio-version >>
+      steps:
+        - run:
+            name: install istio << parameters.istio-version >>
+            environment:
+              USE_SUDO: << parameters.use-sudo >>
+              INSTALL_ISTIO_VERSION: << parameters.istio-version >>
+            command: <<include(scripts/install_istio.sh)>>
+
+  - when:
+      condition: << parameters.argocd-version >>
+      steps:
+        - run:
+            name: install argocd << parameters.argocd-version >>
+            environment:
+              USE_SUDO: << parameters.use-sudo >>
+              INSTALL_ARGOCD_VERSION: << parameters.argocd-version >>
+            command: <<include(scripts/install_argocd.sh)>>
+
+  - when:
+      condition: << parameters.flux-version >>
+      steps:
+        - run:
+            name: install flux << parameters.flux-version >>
+            environment:
+              USE_SUDO: << parameters.use-sudo >>
+              INSTALL_FLUX_VERSION: << parameters.flux-version >>
+            command: <<include(scripts/install_flux.sh)>>
+
+  - when:
+      condition: << parameters.helm-version >>
+      steps:
+        - run:
+            name: install helm << parameters.helm-version >>
+            environment:
+              USE_SUDO: << parameters.use-sudo >>
+              INSTALL_HELM_VERSION: << parameters.helm-version >>
+            command: <<include(scripts/install_helm.sh)>>
+
+  - when:
+      condition: << parameters.circlepipe-version >>
+      steps:
+        - run:
+            name: install helm << parameters.circlepipe-version >>
+            environment:
+              USE_SUDO: << parameters.use-sudo >>
+              INSTALL_CIRCLEPIPE_VERSION: << parameters.circlepipe-version >>
+            command: <<include(scripts/install_circlepipe.sh)>>
+
+  - when:
+      condition: << parameters.px-version >>
+      steps:
+        - run:
+            name: install helm << parameters.px-version >>
+            environment:
+              USE_SUDO: << parameters.use-sudo >>
+              INSTALL_PX_VERSION: << parameters.px-version >>
+            command: <<include(scripts/install_px.sh)>>
+
+  - when:
+      condition: << parameters.terraform-version >>
+      steps:
+        - run:
+            name: install terraform << parameters.terraform-version >>
+            environment:
+              USE_SUDO: << parameters.use-sudo >>
+              INSTALL_TERRAFORM_VERSION: << parameters.terraform-version >>
+            command: <<include(scripts/install_terraform.sh)>>
+
+  - when:
+      condition: << parameters.bats-version >>
+      steps:
+        - run:
+            name: install bats << parameters.bats-version >>
+            environment:
+              USE_SUDO: << parameters.use-sudo >>
+              INSTALL_BATS_VERSION: << parameters.bats-version >>
+            command: <<include(scripts/install_bats.sh)>>
+
+  - when:
+      condition: << parameters.awspec-version >>
+      steps:
+        - run:
+            name: install awspec << parameters.awspec-version >>
+            environment:
+              USE_SUDO: << parameters.use-sudo >>
+              INSTALL_AWSPEC_VERSION: << parameters.awspec-version >>
+            command: <<include(scripts/install_awspec.sh)>>
+
+  - when:
+      condition: << parameters.inspec-version >>
+      steps:
+        - run:
+            name: install inspec << parameters.inspec-version >>
+            environment:
+              USE_SUDO: << parameters.use-sudo >>
+              INSTALL_INSPEC_VERSION: << parameters.inspec-version >>
+            command: <<include(scripts/install_inspec.sh)>>
+
+  - when:
+      condition: << parameters.checkov-version >>
+      steps:
+        - run:
+            name: install inspec << parameters.checkov-version >>
+            environment:
+              USE_SUDO: << parameters.use-sudo >>
+              INSTALL_CHECKOV_VERSION: << parameters.checkov-version >>
+            command: <<include(scripts/install_checkov.sh)>>
+
+  - when:
+      condition: << parameters.trivy-version >>
+      steps:

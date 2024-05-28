@@ -1,5 +1,5 @@
 # src/commands/sonobuoy.yaml
-
+---
 description: Run sonobuoy Kubernetes conformance tests.
 
 parameters:

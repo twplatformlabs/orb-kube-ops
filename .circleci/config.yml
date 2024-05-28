@@ -1,104 +1,79 @@
+---
 version: 2.1
 
 setup: true
- 
-orbs:
-  orb-tools: twdps/orb-tools@0.4.0
-  continuation: circleci/continuation@0.3.1
 
-dev-release-filter: &dev-release-filter
+orbs:
+  orb-tools: circleci/orb-tools@12.1.0
+  shellcheck: circleci/shellcheck@3.2.0
+
+globals:
+  - &context orb-publishing
+  - &orb-name twdps/kube-ops
+
+on-push-main: &on-push-main
   branches:
     only: /main/
   tags:
     ignore: /.*/
 
-edit-tag-publish-filter: &edit-tag-publish-filter
+on-tag-main: &on-tag-main
   branches:
     ignore: /.*/
   tags:
-    only: /^edit.*/
-
-patch-tag-publish-filter: &patch-tag-publish-filter
-  branches:
-    ignore: /.*/
-  tags:
-    only: /^patch.*/
-
-minor-tag-publish-filter: &minor-tag-publish-filter
-  branches:
-    ignore: /.*/
-  tags:
-    only: /^minor.*/
-
-major-tag-publish-filter: &major-tag-publish-filter
-  branches:
-    ignore: /.*/
-  tags:
-    only: /^major.*/
-
-jobs:
-  integration-tests:
-    executor: continuation/default
-    steps:
-      - checkout
-      - continuation/continue:
-          configuration_path: .circleci/integration.yml
+    only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
 
 workflows:
-  setup:
+
+  static analysis and test:
     jobs:
-      - orb-tools/validate:
-          filters: *dev-release-filter
+      - orb-tools/lint:
+          filters: *on-push-main
 
-      - orb-tools/publish-dev:
-          context: twdps-orb-authors
-          orb-name: twdps/kube-ops
-          filters: *dev-release-filter
+      - orb-tools/review:
+          exclude: RC010,RC009
+          filters: *on-push-main
+
+      - shellcheck/check:
+          filters: *on-push-main
+
+      - orb-tools/pack:
+          filters: *on-push-main
+
+      # - orb-tools/publish:
+      #     name: publish development package
+      #     context: *context
+      #     orb_name: *orb-name
+      #     vcs_type: << pipeline.project.type >>
+      #     filters: *on-push-main
+      #     requires:
+      #       - orb-tools/lint
+      #       - orb-tools/review
+      #       - shellcheck/check
+      #       - orb-tools/pack
+
+      # - orb-tools/continue:
+      #     name: Launch integration test pipeline
+      #     context: *context
+      #     orb_name: *orb-name
+      #     config_path: .circleci/integration-test.yml
+      #     pipeline_number: << pipeline.number >>
+      #     vcs_type: << pipeline.project.type >>
+      #     filters: *on-push-main
+      #     requires:
+      #       - publish development package
+
+  release:
+    jobs:
+      - orb-tools/pack:
+          filters: *on-tag-main
+
+      - orb-tools/publish:
+          name: publish release version
+          context: *context
+          orb_name: *orb-name
+          vcs_type: << pipeline.project.type >>
+          pub_type: production
+          filters: *on-tag-main
           requires:
-            - orb-tools/validate
-
-      - approve-release:
-          type: approval
-          requires:
-            - orb-tools/publish-dev
-          filters: *dev-release-filter
-
-      - orb-tools/release-tag:
-          context: twdps-orb-authors
-          ssh-fingerprints: $SVC_FINGERPRINT
-          filters: *dev-release-filter
-          requires:
-            - approve-release
-
-      - integration-tests:
-          filters: *dev-release-filter
-          requires:
-            - orb-tools/release-tag
-
-      - orb-tools/promote-dev-to-prod:
-          name: patch-release
-          context: twdps-orb-authors
-          release: patch
-          orb-name: twdps/kube-ops
-          ssh-fingerprints: $SVC_FINGERPRINT
-          filters: *patch-tag-publish-filter
-
-      - orb-tools/promote-dev-to-prod:
-          name: minor-release
-          context: twdps-orb-authors
-          release: minor
-          orb-name: twdps/kube-ops
-          ssh-fingerprints: $SVC_FINGERPRINT
-          filters: *minor-tag-publish-filter
-
-      - orb-tools/promote-dev-to-prod:
-          name: major-release
-          context: twdps-orb-authors
-          release: major
-          orb-name: twdps/kube-ops
-          ssh-fingerprints: $SVC_FINGERPRINT
-          filters: *major-tag-publish-filter
-
-      - orb-tools/documentation-only:
-          name: documentation-updates
-          filters: *edit-tag-publish-filter
+            - orb-tools/pack

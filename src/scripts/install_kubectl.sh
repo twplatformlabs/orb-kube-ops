@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -eo pipefail
 
 function install() {
   echo "installing kubectl ${1}"
