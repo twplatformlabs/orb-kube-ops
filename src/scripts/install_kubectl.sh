@@ -16,7 +16,7 @@ echo "version = latest"
   VERSION=$(curl -L -s https://dl.k8s.io/release/stable.txt)
 else
   echo "version is ${INSTALL_KUBECTL_VERSION}"
-  VERSION=v$INSTALL_KUBECTL_VERSION
+  VERSION="v$INSTALL_KUBECTL_VERSION"
 fi
 
 echo "preparing to install kubectl ${VERSION}"
@@ -24,7 +24,7 @@ echo "preparing to install kubectl ${VERSION}"
 if [[ "$USE_SUDO" == 1 ]]; then
   sudo bash -c "$(declare -f install); install ${VERSION};"
 else
-  install ${VERSION}
+  install "${VERSION}"
 fi
 
 kubectl version --client=true --short=true || { echo "error: invalid kubectl version"; exit 2; }

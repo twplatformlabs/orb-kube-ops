@@ -12,14 +12,14 @@ function install() {
 echo "requested trivy ${INSTALL_TRIVY_VERSION}"
 echo "USE_SUDO = ${USE_SUDO}"
 
-if [[ $INSTALL_TRIVY_VERSION == "latest" ]]; then
+if [[ "$INSTALL_TRIVY_VERSION" == "latest" ]]; then
   echo "install of 'latest' not supported"
   exit 1
 else
   if [ "$USE_SUDO" == 1 ]; then
     sudo bash -c "$(declare -f install); install ${INSTALL_TRIVY_VERSION};"
   else
-    install ${INSTALL_TRIVY_VERSION}
+    install "${INSTALL_TRIVY_VERSION}"
   fi
 fi
 

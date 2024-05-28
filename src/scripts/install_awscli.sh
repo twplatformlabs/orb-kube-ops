@@ -15,7 +15,7 @@ function install_latest() {
 echo "requested awscli ${INSTALL_AWSCLI_VERSION}"
 echo "USE_SUDO = ${USE_SUDO}"
 
-if [[ $INSTALL_AWSCLI_VERSION == "latest" ]]; then
+if [[ "$INSTALL_AWSCLI_VERSION" == "latest" ]]; then
   if [ "$USE_SUDO" == 1  ]; then
     sudo bash -c "$(declare -f install_latest); install_latest;"
   else
@@ -25,7 +25,7 @@ else
   if [ "$USE_SUDO" == 1  ]; then
     sudo bash -c "$(declare -f install); install ${INSTALL_AWSCLI_VERSION};"
   else
-    install ${INSTALL_AWSCLI_VERSION}
+    install "${INSTALL_AWSCLI_VERSION}"
   fi
 fi
 

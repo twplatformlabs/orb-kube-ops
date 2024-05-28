@@ -3,7 +3,7 @@ set -eo pipefail
 
 function install() {
   echo "installing checkov ${1}"
-  pip install checkov==${1}
+  pip install checkov=="${1}"
 
 }
 
@@ -15,7 +15,7 @@ function install_latest() {
 echo "requested checkov ${INSTALL_CHECKOV_VERSION}"
 echo "USE_SUDO = ${USE_SUDO}"
 
-if [[ $INSTALL_CHECKOV_VERSION == "latest" ]]; then
+if [[ "$INSTALL_CHECKOV_VERSION" == "latest" ]]; then
   if [ "$USE_SUDO" == 1  ]; then
     sudo bash -c "$(declare -f install_latest); install_latest;"
   else
@@ -25,7 +25,7 @@ else
   if [ "$USE_SUDO" == 1  ]; then
     sudo bash -c "$(declare -f install); install ${INSTALL_CHECKOV_VERSION};"
   else
-    install ${INSTALL_CHECKOV_VERSION}
+    install "${INSTALL_CHECKOV_VERSION}"
   fi
 fi
 

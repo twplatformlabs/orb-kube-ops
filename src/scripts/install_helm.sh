@@ -17,7 +17,7 @@ function install_latest() {
 echo "requested helm ${INSTALL_HELM_VERSION}"
 echo "USE_SUDO = ${USE_SUDO}"
 
-if [[ $INSTALL_HELM_VERSION == "latest" ]]; then
+if [[ "$INSTALL_HELM_VERSION" == "latest" ]]; then
   if [ "$USE_SUDO" == 1 ]; then
     sudo bash -c "$(declare -f install_latest); install_latest;"
   else
@@ -27,7 +27,7 @@ else
   if [ "$USE_SUDO" == 1 ]; then
     sudo bash -c "$(declare -f install); install ${INSTALL_HELM_VERSION};"
   else
-    install ${INSTALL_HELM_VERSION}
+    install "${INSTALL_HELM_VERSION}"
   fi
 fi
 

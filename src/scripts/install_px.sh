@@ -11,14 +11,14 @@ function install() {
 echo "requested px ${INSTALL_PX_VERSION}"
 echo "USE_SUDO = ${USE_SUDO}"
 
-if [[ $INSTALL_CIRCLEPIPE_VERSION == "latest" ]]; then
+if [[ "$INSTALL_CIRCLEPIPE_VERSION" == "latest" ]]; then
   echo "install tag latest not supported"
   exit 1
 else
   if [ "$USE_SUDO" == 1 ]; then
     sudo bash -c "$(declare -f install); install ${INSTALL_PX_VERSION};"
   else
-    install ${INSTALL_PX_VERSION}
+    install "${INSTALL_PX_VERSION}"
   fi
 fi
 

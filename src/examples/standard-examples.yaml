@@ -1,0 +1,36 @@
+# src/examples/command-examples.yml
+# yamllint disable rule:line-length
+---
+description: Standard workflow demonstrating orb command features.
+
+usage:
+  version: 2.1
+
+  orbs:
+    kube: twdps/kube-ops@1.0.0
+    op: twdps/onepassword@3.0.0
+
+  on-push-main: &on-push-main
+    branches:
+      only: /main/
+    tags:
+      ignore: /.*/
+
+  jobs:
+    common commands:
+      machine:
+        image: ubuntu-2204:current
+      resource_class: medium
+      steps:
+        - checkout
+        - kube/install:
+            kind-version: 0.23.0
+            awscli-version: 1.32.25
+            istio-version: 1.22.0
+
+  workflows:
+    version: 2
+
+    workflow-example:
+      jobs:
+        - common commands

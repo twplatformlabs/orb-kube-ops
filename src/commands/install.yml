@@ -226,3 +226,9 @@ steps:
   - when:
       condition: << parameters.trivy-version >>
       steps:
+        - run:
+            name: install trivy << parameters.trivy-version >>
+            environment:
+              USE_SUDO: << parameters.use-sudo >>
+              INSTALL_TRIVY_VERSION: << parameters.trivy-version >>
+            command: <<include(scripts/install_trivy.sh)>>

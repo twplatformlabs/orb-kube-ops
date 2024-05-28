@@ -3,7 +3,7 @@ set -eo pipefail
 
 function install() {
   echo "installing awspec ${1}"
-  gem install --no-document awspec:${1}
+  gem install --no-document awspec:"${1}"
 
 }
 
@@ -15,7 +15,7 @@ function install_latest() {
 echo "requested awspec ${INSTALL_AWSPEC_VERSION}"
 echo "USE_SUDO = ${USE_SUDO}"
 
-if [[ $INSTALL_AWSPEC_VERSION == "latest" ]]; then
+if [[ "$INSTALL_AWSPEC_VERSION" == "latest" ]]; then
   if [ "$USE_SUDO" == 1  ]; then
     sudo bash -c "$(declare -f install_latest); install_latest;"
   else
@@ -25,7 +25,7 @@ else
   if [ "$USE_SUDO" == 1  ]; then
     sudo bash -c "$(declare -f install); install ${INSTALL_AWSPEC_VERSION};"
   else
-    install ${INSTALL_AWSPEC_VERSION}
+    install "${INSTALL_AWSPEC_VERSION}"
   fi
 fi
 
