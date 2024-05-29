@@ -9,21 +9,6 @@ description: |
   a specific version of the named package. If left blank the command will
   not attempt to install anything.
 
-  Supported packages:
-  - kubectl
-  - kind
-  - awscli
-  - argocd
-  - flux
-  - helm
-  - circlepipe
-  - px
-  - bats
-  - awspec
-  - inspec
-  - checkov
-  - trivy
-
 parameters:
 
   use-sudo:
@@ -65,9 +50,6 @@ parameters:
     type: string
     default: ""
   awspec-version:
-    type: string
-    default: ""
-  inspec-version:
     type: string
     default: ""
   checkov-version:
@@ -167,7 +149,7 @@ steps:
       condition: << parameters.px-version >>
       steps:
         - run:
-            name: install helm << parameters.px-version >>
+            name: install px << parameters.px-version >>
             environment:
               USE_SUDO: << parameters.use-sudo >>
               INSTALL_PX_VERSION: << parameters.px-version >>
@@ -202,16 +184,6 @@ steps:
               USE_SUDO: << parameters.use-sudo >>
               INSTALL_AWSPEC_VERSION: << parameters.awspec-version >>
             command: <<include(scripts/install_awspec.sh)>>
-
-  - when:
-      condition: << parameters.inspec-version >>
-      steps:
-        - run:
-            name: install inspec << parameters.inspec-version >>
-            environment:
-              USE_SUDO: << parameters.use-sudo >>
-              INSTALL_INSPEC_VERSION: << parameters.inspec-version >>
-            command: <<include(scripts/install_inspec.sh)>>
 
   - when:
       condition: << parameters.checkov-version >>

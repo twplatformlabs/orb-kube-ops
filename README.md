@@ -12,8 +12,6 @@
 
 Works in conjunction with the twdps/circleci-kube-ops executor.  
 
-The twdps/circleci-kube-ops executor is configured to support most common kubernetes operational tasks. This orb work in conjunction with that executor and enables users of the executor to perform common kubernetes administrative tasks as well as manage the executor including overriding packages versions at run time.  
+The twdps/circleci-kube-ops executor is configured to support most common kubernetes operational tasks. This orb work in conjunction with that executor and enables users of the executor to perform common kubernetes administrative tasks as well as manage the executor including overriding package versions at run time.  
 
-
-See [orb registry](https://circleci.com/orbs/registry/orb/twdps/kube-ops) for usage examples and release history.
-
+See [orb registry](https://circleci.com/orbs/registry/orb/twdps/kube-ops) for usage examples and release history.  
