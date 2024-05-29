@@ -19,4 +19,6 @@ steps:
       command: op inject -i kubeconfig.tpl -o kubeconfig
   - run:
       name: set ~/.kube/config
-      command: cat kubeconfig | base64 -d > ~/.kube/config
+      command: |
+        mkdir -p ~/.kube
+        cat kubeconfig | base64 -d > ~/.kube/config
