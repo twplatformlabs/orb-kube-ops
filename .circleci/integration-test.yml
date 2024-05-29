@@ -68,4 +68,5 @@ workflows:
   integration tests:
     jobs:
       - test package install
-      - test general commands
+      - test general commands:
+          context: empc-lab
