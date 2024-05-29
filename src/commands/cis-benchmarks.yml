@@ -8,7 +8,7 @@ parameters:
   benchmark:
     description: Required, benchmark to run. Use full for fully self-managed control plan
     type: enum
-    enum: ["eks", "aks", "gke", "full"]
+    enum: ["eks", "aks", "gke"]
 
   namespace:
     description: deploy kube-bench pod to this namespace.
@@ -37,13 +37,6 @@ steps:
         - run:
             name: use CIS Google Cloud Platform GKE benchmarks
             command: <<include(scripts/benchmark_gke.sh)>>
-  - when:
-      condition:
-        equal: [<< parameters.benchmark >>, "full"]
-      steps:
-        - run:
-            name: use CIS Kubernetes (generic) benchmarks
-            command: <<include(scripts/benchmark_full.sh)>>
   - run:
       name: run CIS Kubernetes benchmark security scan
       environment:

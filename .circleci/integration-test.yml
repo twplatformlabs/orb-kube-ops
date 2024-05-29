@@ -45,7 +45,7 @@ jobs:
             flux version --client | grep '2.3.0'
             helm version --short | grep '3.15.0'
             circlepipe version | grep '0.3.2'
-            px --version | grep '0.8.2'
+            px version | grep '0.8.2'
             terraform version | grep '1.8.3'
             bats --version | grep '1.11.0'
             awspec --version | grep '1.30.0'

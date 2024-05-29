@@ -22,7 +22,7 @@ else
   fi
 fi
 
-px --version || { echo "error: invalid px version"; exit 2; }
+px version || { echo "error: invalid px version"; exit 2; }
 
 
 

@@ -27,6 +27,9 @@ usage:
             kind-version: 0.23.0
             awscli-version: 1.32.25
             istio-version: 1.22.0
+        - kube/cis-benchmark:
+            benchmark: aws
+
 
   workflows:
     version: 2
