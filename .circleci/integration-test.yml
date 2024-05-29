@@ -68,3 +68,4 @@ workflows:
   integration tests:
     jobs:
       - test package install
+      - test general commands
