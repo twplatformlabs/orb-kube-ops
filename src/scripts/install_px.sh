@@ -5,7 +5,7 @@ function install() {
   echo "installing px ${1}"
   curl -o px "https://storage.googleapis.com/pixie-dev-public/cli/${1}/cli_linux_amd64"
   sudo chmod +x px
-  mv px /uar/loca/bin/px
+  mv px /usr/local/bin/px
 }
 
 echo "requested px ${INSTALL_PX_VERSION}"
