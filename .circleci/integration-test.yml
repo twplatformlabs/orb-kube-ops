@@ -13,7 +13,7 @@ jobs:
 
   test general commands:
     docker:
-      image: twdps/circleci-kube-ops:alpine-stable
+      - image: twdps/circleci-kube-ops:alpine-stable
     steps:
       - checkout
       - kube/op-config:
