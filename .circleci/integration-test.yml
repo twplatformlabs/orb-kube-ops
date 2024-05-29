@@ -11,6 +11,17 @@ globals:
 
 jobs:
 
+  test general commands:
+    docker:
+      image: twdps/circleci-kube-ops:alpine-stable
+    steps:
+      - checkout
+      - kube/op-config:
+          op-value: empc-lab/psk-aws-sbx-i01-aws-us-east-1/kubeconfig-base64
+      - run:
+          name: confirm op-config results
+          command: cat ~/.kube/config | grep "clusters:"
+
   test package install:
     machine:
       image: ubuntu-2204:current

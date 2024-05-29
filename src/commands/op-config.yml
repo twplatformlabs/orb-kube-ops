@@ -1,0 +1,22 @@
+# src/commands/install.yml
+# yamllint disable rule:line-length
+---
+
+description: Set ~/.kube/config from from local base64 encrypted file contents
+
+parameters:
+
+  op-value:
+    description: onepassword vault item containing kubeconfig
+    type: string
+
+steps:
+  - run:
+      name: write temporary template file
+      command: echo "op://<< parameters.op-value >>" > kubeconfig.tpl
+  - run:
+      name: op inject template to local file
+      command: op inject -i kubeconfig.tpl -o kubeconfig
+  - run:
+      name: set ~/.kube/config
+      command: cat kubeconfig | base64 -d > ~/.kube/config

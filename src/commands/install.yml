@@ -139,7 +139,7 @@ steps:
       condition: << parameters.circlepipe-version >>
       steps:
         - run:
-            name: install helm << parameters.circlepipe-version >>
+            name: install circlepipe << parameters.circlepipe-version >>
             environment:
               USE_SUDO: << parameters.use-sudo >>
               INSTALL_CIRCLEPIPE_VERSION: << parameters.circlepipe-version >>
@@ -189,7 +189,7 @@ steps:
       condition: << parameters.checkov-version >>
       steps:
         - run:
-            name: install inspec << parameters.checkov-version >>
+            name: install checkov << parameters.checkov-version >>
             environment:
               USE_SUDO: << parameters.use-sudo >>
               INSTALL_CHECKOV_VERSION: << parameters.checkov-version >>
