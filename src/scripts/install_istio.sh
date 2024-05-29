@@ -7,17 +7,17 @@ function install() {
   mv -f "istio-${1}/bin/istioctl" /usr/local/bin/istioctl
 }
 
-echo "requested istioctl ${INSTALL_ISTIOCTL_VERSION}"
+echo "requested istioctl ${INSTALL_ISTIO_VERSION}"
 echo "USE_SUDO = ${USE_SUDO}"
 
-if [[ "$INSTALL_ISTIOCTL_VERSION" == "latest" ]]; then
+if [[ "$INSTALL_ISTIO_VERSION" == "latest" ]]; then
   echo "install of 'latest' not supported"
   exit 1
 else
   if [ "$USE_SUDO" == "true" ]; then
-    sudo bash -c "$(declare -f install); install ${INSTALL_ISTIOCTL_VERSION};"
+    sudo bash -c "$(declare -f install); install ${INSTALL_ISTIO_VERSION};"
   else
-    install "${INSTALL_ISTIOCTL_VERSION}"
+    install "${INSTALL_ISTIO_VERSION}"
   fi
 fi
 
