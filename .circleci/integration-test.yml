@@ -49,7 +49,6 @@ jobs:
             terraform version | grep '1.8.3'
             bats --version | grep '1.11.0'
             awspec --version | grep '1.30.0'
-            inspec --version | grep '5.22.36'
             checkov --version | grep '3.2.28'
             trivy version | grep '0.51.1'
 
