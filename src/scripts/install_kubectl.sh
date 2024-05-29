@@ -27,4 +27,4 @@ else
   install "${VERSION}"
 fi
 
-kubectl version --client=true --short=true || { echo "error: invalid kubectl version"; exit 2; }
+kubectl version --client=true || { echo "error: invalid kubectl version"; exit 2; }
