@@ -16,7 +16,7 @@ if [[ "$INSTALL_TRIVY_VERSION" == "latest" ]]; then
   echo "install of 'latest' not supported"
   exit 1
 else
-  if [ "$USE_SUDO" == 1 ]; then
+  if [ "$USE_SUDO" == "true" ]; then
     sudo bash -c "$(declare -f install); install ${INSTALL_TRIVY_VERSION};"
   else
     install "${INSTALL_TRIVY_VERSION}"

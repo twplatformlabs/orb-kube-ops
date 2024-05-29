@@ -15,7 +15,7 @@ if [[ "$INSTALL_CIRCLEPIPE_VERSION" == "latest" ]]; then
   echo "install tag latest not supported"
   exit 1
 else
-  if [ "$USE_SUDO" == 1 ]; then
+  if [ "$USE_SUDO" == "true" ]; then
     sudo bash -c "$(declare -f install); install ${INSTALL_PX_VERSION};"
   else
     install "${INSTALL_PX_VERSION}"

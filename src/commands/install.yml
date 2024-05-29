@@ -29,7 +29,7 @@ parameters:
   use-sudo:
     description: package needs to be installed with elevated privileges
     type: boolean
-    default: false
+    default: "false"
 
   kubectl-version:
     type: string

@@ -21,7 +21,7 @@ fi
 
 echo "preparing to install kubectl ${VERSION}"
 
-if [[ "$USE_SUDO" == 1 ]]; then
+if [[ "$USE_SUDO" == "true" ]]; then
   sudo bash -c "$(declare -f install); install ${VERSION};"
 else
   install "${VERSION}"
