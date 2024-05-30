@@ -22,3 +22,4 @@ steps:
       command: |
         mkdir -p ~/.kube
         cat kubeconfig | base64 -d > ~/.kube/config
+        chmod 644 ~/.kube/config
