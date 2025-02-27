@@ -7,7 +7,7 @@ orbs:
 
 globals:
   - &context orb-publishing
-  - &shell op run --env-file op.env -- /bin/bash -eo pipefail
+  - &kubeconfig platform/sbx-i01-aws-us-east-1/kubeconfig-base64
 
 jobs:
 
@@ -17,7 +17,7 @@ jobs:
     steps:
       - checkout
       - kube/op-config:
-          op-value: empc-lab/psk-aws-sbx-i01-aws-us-east-1/kubeconfig-base64
+          op-value: *kubeconfig
       - run:
           name: confirm op-config results
           command: cat ~/.kube/config | grep "clusters:"
@@ -69,4 +69,4 @@ workflows:
     jobs:
       - test package install
       - test general commands:
-          context: empc-lab
+          context: *context

@@ -4,8 +4,10 @@ version: 2.1
 
 description: |
   Standard kubernetes cluster operations pipeline orb. Typically used in conjunction with the
-  [twdps/circleci-kube-ops executor](https://github.com/ThoughtWorks-DPS/circleci-kube-ops).
+  [twdps/circleci-kube-ops executor](https://github.com/twplatformlabs/circleci-kube-ops).
+  The GitHub organization for these resources has changed to twplatformlabs. Until further
+  notice, the CircleCI org slug will remain twdps.
 
 display:
-  source_url: "https://github.com/ThoughtWorks-DPS/orb-kube-ops"
-  home_url: "https://github.com/ThoughtWorks-DPS/orb-kube-ops"
+  source_url: "https://github.com/twplatformlabs/orb-kube-ops"
+  home_url: "https://github.com/twplatformlabs/orb-kube-ops"
