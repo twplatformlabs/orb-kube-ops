@@ -6,7 +6,7 @@
 	</p>
   <h3>orb-kube-ops</h3>
   <h5>a workflow orb for typical kubernetes operational pipelines</h5>
-  <a href="https://app.circleci.com/pipelines/github/twplatformlabs/orb-kube-ops"><img src="https://circleci.com/gh/twplatformlabs/orb-kube-ops.svg?style=shield"></a> <a href="https://circleci.com/orbs/registry/orb/twplatformlabs/orb-kube-ops"><img src="https://badges.circleci.io/orb/twplatformlabs/orb-kube-ops"></a><a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
+  <a href="https://app.circleci.com/pipelines/github/twplatformlabs/orb-kube-ops"><img src="https://circleci.com/gh/twplatformlabs/orb-kube-ops.svg?style=shield"></a> <a href="https://circleci.com/orbs/registry/orb/twdps/orb-kube-ops"><img src="https://badges.circleci.io/orb/twdps/orb-kube-ops"></a><a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
 </div>
 <br />
 
