@@ -1,8 +1,8 @@
-# src/commands/install.yml
+# src/commands/op-config.yml
 # yamllint disable rule:line-length
 ---
 
-description: Set ~/.kube/config from from local base64 encrypted file contents
+description: Set ~/.kube/config from from base64 encrypted file contents pulled from 1password
 
 parameters:
 
