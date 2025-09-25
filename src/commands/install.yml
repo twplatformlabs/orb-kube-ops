@@ -58,6 +58,9 @@ parameters:
   trivy-version:
     type: string
     default: ""
+  karmada-version:
+    type: string
+    default: ""
 
 steps:
 
@@ -204,3 +207,13 @@ steps:
               USE_SUDO: << parameters.use-sudo >>
               INSTALL_TRIVY_VERSION: << parameters.trivy-version >>
             command: <<include(scripts/install_trivy.sh)>>
+
+  - when:
+      condition: << parameters.karmada-version >>
+      steps:
+        - run:
+            name: install karmada << parameters.karmada-version >>
+            environment:
+              USE_SUDO: << parameters.use-sudo >>
+              INSTALL_KARMADA_VERSION: << parameters.karmada-version >>
+            command: <<include(scripts/install_karmada.sh)>>

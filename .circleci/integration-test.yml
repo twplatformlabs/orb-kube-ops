@@ -43,6 +43,7 @@ jobs:
           awspec-version: 1.30.0
           checkov-version: 3.2.28
           trivy-version: 0.51.1
+          karmada-version: 1.15.0
       - kube/install:
           bats-version: 1.11.0
       - run:
@@ -62,6 +63,7 @@ jobs:
             awspec --version | grep '1.30.0'
             checkov --version | grep '3.2.28'
             trivy version | grep '0.51.1'
+            karmada version | grep '1.15.0'
 
 workflows:
 

@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -eo pipefail
-set -eo pipefail
 
 function install() {
   echo "installing trivy ${1}"
