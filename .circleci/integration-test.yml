@@ -63,7 +63,7 @@ jobs:
             awspec --version | grep '1.30.0'
             checkov --version | grep '3.2.28'
             trivy version | grep '0.51.1'
-            karmada version | grep '1.15.0'
+            karmadactl version | grep '1.15.0'
 
 workflows:
 

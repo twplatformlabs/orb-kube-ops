@@ -23,5 +23,3 @@ else
 fi
 
 karmadactl version || { echo "error: invalid karmadactl version"; exit 2; }
-
-
