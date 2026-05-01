@@ -23,13 +23,19 @@ usage:
       resource_class: medium
       steps:
         - checkout
-        - kube/install:
+        - kube/install:                         # install specific package version 
             kind-version: 0.23.0
             awscli-version: 1.32.25
             istio-version: 1.22.0
+        - kube/op-kubeconfig:                    # setup kubeconfig from sa config stored as base64 in 1password vault
+            op-value: path/to/kubeconfig-base64
+        - kube/gcloud-kubeconfig:                # setup kubeconfig for service account GKE access
+            cluster-name: my-cluster
+            project-id: 0123456789
+            region: us-central1
+            impersonate-service-account: my-service-account@my-project.iam.gserviceaccount.com
         - kube/cis-benchmark:
             benchmark: aws
-
 
   workflows:
     version: 2
@@ -37,3 +43,4 @@ usage:
     workflow-example:
       jobs:
         - common commands
+
