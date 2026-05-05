@@ -16,7 +16,7 @@ jobs:
       - image: twdps/circleci-kube-ops:alpine-stable
     steps:
       - checkout
-      - kube/op-config:
+      - kube/op-kubeconfig:
           op-value: *kubeconfig
       - run:
           name: confirm op-config results
