@@ -1,14 +1,24 @@
 #!/usr/bin/env bash
 set -eo pipefail
 
+function deps() {
+  export RUBYOPT='-raws-sdk-elastictranscoder'
+  sudo gem install  --no-document \
+           base64:0.1.0 \
+           aws-sdk \
+           aws-sdk-elastictranscoder
+}
+
 function install() {
   echo "installing awspec ${1}"
+  deps
   gem install --no-document awspec:"${1}"
 
 }
 
 function install_latest() {
   echo "installing awspec latest"
+  deps
   gem install --no-document awspec
 }
 
