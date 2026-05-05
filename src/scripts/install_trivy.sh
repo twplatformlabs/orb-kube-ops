@@ -12,6 +12,8 @@ echo "USE_SUDO = ${USE_SUDO}"
 # set to empty string if latest
 if [[ "$INSTALL_TRIVY_VERSION" == "latest" ]]; then
   export INSTALL_TRIVY_VERSION=""
+else
+  export INSTALL_TRIVY_VERSION="v${INSTALL_TRIVY_VERSION}"
 fi
 
 if [ "$USE_SUDO" == "true" ]; then
