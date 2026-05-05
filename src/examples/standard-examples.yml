@@ -23,7 +23,7 @@ usage:
       resource_class: medium
       steps:
         - checkout
-        - kube/install:                         # install specific package version 
+        - kube/install:                         # install specific package version
             kind-version: 0.23.0
             awscli-version: 1.32.25
             istio-version: 1.22.0
@@ -43,4 +43,3 @@ usage:
     workflow-example:
       jobs:
         - common commands
-
