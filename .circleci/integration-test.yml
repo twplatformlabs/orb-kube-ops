@@ -40,7 +40,7 @@ jobs:
           circlepipe-version: 0.3.2
           px-version: 0.8.2
           terraform-version: 1.8.3
-          awspec-version: 1.30.0
+          awspec-version: 1.36.0
           checkov-version: 3.2.28
           trivy-version: 0.51.1
           karmada-version: 1.15.0
@@ -60,7 +60,7 @@ jobs:
             px version | grep '0.8.2'
             terraform version | grep '1.8.3'
             bats --version | grep '1.11.0'
-            awspec --version | grep '1.30.0'
+            awspec --version | grep '1.36.0'
             checkov --version | grep '3.2.28'
             trivy version | grep '0.51.1'
             karmadactl version | grep '1.15.0'
