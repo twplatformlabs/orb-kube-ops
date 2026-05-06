@@ -11,7 +11,7 @@ parameters:
     description: Source path for file(s) to be written.
     type: string
 
-  destination: 
+  destination:
     description: Target path for file(s) to be written.
     type: string
 
