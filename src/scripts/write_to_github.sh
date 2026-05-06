@@ -185,6 +185,7 @@ commit_files_to_github() {
     local tree_response
     tree_response=$(github_api POST "/repos/${GITHUB_REPO}/git/trees" \
         "{\"base_tree\": \"${base_tree_sha}\", \"tree\": ${tree_entries}}")
+    echo "Tree response: ${tree_response}" >&2
     local new_tree_sha
     new_tree_sha=$(echo "$tree_response" | grep '"sha"' | head -1 | sed 's/.*"sha": *"\([^"]*\)".*/\1/')
     echo "  New tree: ${new_tree_sha}" >&2
