@@ -256,7 +256,8 @@ main() {
     local dest_folder="$DESTINATION"
     GITHUB_REPO="$REPOSITORY_URL"
     GITHUB_BRANCH="$BRANCH"
-    local commit_message="$COMMITMESSAGE"
+    local commit_message
+    commit_message=$(eval echo "$COMMITMESSAGE")
 
     echo "Source: ${source_pattern}" >&2
     echo "Destination: ${dest_folder}" >&2
