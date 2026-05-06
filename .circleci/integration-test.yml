@@ -30,7 +30,7 @@ jobs:
             echo "WRITEUUID=${uuid}" >> $BASH_ENV
       - kube/write-to-github:
           source: check.uuid
-          destination: check.uuid
+          destination: .
           repository-url: twplatformlabs/static
           branch: master
       - run:
