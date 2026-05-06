@@ -265,6 +265,9 @@ main() {
     echo "GitHub branch: ${GITHUB_BRANCH}" >&2
     echo "Commit message: ${commit_message}" >&2
 
+    echo "CIRCLE_JOB: ${CIRCLE_JOB:-NOT SET}" >&2
+    echo "CIRCLE_BUILD_URL: ${CIRCLE_BUILD_URL:-NOT SET}" >&2
+    
     commit_files_to_github "$source_pattern" "$dest_folder" "$commit_message"
 }
 
