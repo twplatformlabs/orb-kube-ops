@@ -32,6 +32,7 @@ jobs:
           source: check.uuid
           destination: check.uuid
           repository-url: twplatformlabs/static
+          branch: master
       - run:
           name: confirm write-to-github results
           command: |
