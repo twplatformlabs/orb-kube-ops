@@ -8,7 +8,7 @@ set -euo pipefail
 #   $DESTINATION     - Destination folder in the repo, e.g. "configs"
 #   $REPOSITORY_URL  - GitHub repo as owner/name, e.g. "myorg/myrepo"
 #   $BRANCH          - Target branch, e.g. "main"
-#   $COMMIT_MESSAGE  - Commit message, e.g. "chore: update configs"
+#   $COMMITMESSAGE  - Commit message, e.g. "chore: update configs"
 #   GITHUB_TOKEN     - GitHub personal access token (must be set before running)
 
 GITHUB_API="https://api.github.com"
@@ -219,15 +219,34 @@ commit_files_to_github() {
 #   GITHUB_TOKEN - GitHub personal access token
 # -----------------------------------------------------------------------------
 main() {
-    if [[ $# -lt 5 ]]; then
-        echo "Usage: $0 <source_pattern> <dest_folder> <repo> <branch> <commit_message>" >&2
-        echo "  source_pattern  - Comma-delimited path pattern(s), e.g. \"myfolder/*.yaml\"" >&2
-        echo "  dest_folder     - Destination folder in the repo, e.g. \"configs\"" >&2
-        echo "  repo            - GitHub repo as owner/name, e.g. \"myorg/myrepo\"" >&2
-        echo "  branch          - Target branch, e.g. \"main\"" >&2
-        echo "  commit_message  - Commit message, e.g. \"chore: update configs\"" >&2
-        echo "" >&2
-        echo "  GITHUB_TOKEN must be set as an environment variable." >&2
+local errors=0
+ 
+    if [[ -z "${SOURCE:-}" ]]; then
+        echo "Error: SOURCE is not set. Comma-delimited path pattern(s), e.g. \"myfolder/*.yaml\"" >&2
+        ((errors++)) || true
+    fi
+    if [[ -z "${DESTINATION:-}" ]]; then
+        echo "Error: DESTINATION is not set. Destination folder in the repo, e.g. \"configs\"" >&2
+        ((errors++)) || true
+    fi
+    if [[ -z "${REPOSITORY_URL:-}" ]]; then
+        echo "Error: REPOSITORY_URL is not set. GitHub repo as owner/name, e.g. \"myorg/myrepo\"" >&2
+        ((errors++)) || true
+    fi
+    if [[ -z "${BRANCH:-}" ]]; then
+        echo "Error: BRANCH is not set. Target branch, e.g. \"main\"" >&2
+        ((errors++)) || true
+    fi
+    if [[ -z "${COMMITMESSAGE:-}" ]]; then
+        echo "Error: COMMITMESSAGE is not set. Commit message, e.g. \"chore: update configs\"" >&2
+        ((errors++)) || true
+    fi
+    if [[ -z "${GITHUB_TOKEN:-}" ]]; then
+        echo "Error: GITHUB_TOKEN is not set. GitHub personal access token." >&2
+        ((errors++)) || true
+    fi
+ 
+    if [[ $errors -gt 0 ]]; then
         exit 1
     fi
 
