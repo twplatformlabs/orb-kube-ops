@@ -5,7 +5,7 @@ set -euo pipefail
 #
 # Expects the following ENV values to exist
 #   $SOURCE          - Comma-delimited path pattern(s), e.g. "myfolder/*.yaml"
-#   $DESTINATION     - Destination folder in the repo, e.g. "configs"
+#   $DESTINATION     - Destination folder in the repo, e.g. "configs" or "." for root
 #   $REPOSITORY_URL  - GitHub repo as owner/name, e.g. "myorg/myrepo"
 #   $BRANCH          - Target branch, e.g. "main"
 #   $COMMITMESSAGE  - Commit message, e.g. "chore: update configs"
@@ -106,7 +106,7 @@ create_blob() {
     response=$(github_api POST "/repos/${GITHUB_REPO}/git/blobs" \
         "{\"content\": \"${content}\", \"encoding\": \"base64\"}")
 
-    echo "$response" | grep '"sha"' | head -1 | sed 's/.*"sha": *"\([^"]*\)".*/\1/'
+    echo "$response" | jq -r '.sha'
 }
 
 # -----------------------------------------------------------------------------
@@ -136,18 +136,14 @@ commit_files_to_github() {
     local ref_response
     ref_response=$(github_api GET "/repos/${GITHUB_REPO}/git/refs/heads/${GITHUB_BRANCH}")
     local base_commit_sha
-    base_commit_sha=$(echo "$ref_response" | grep '"sha"' | head -1 | sed 's/.*"sha": *"\([^"]*\)".*/\1/')
+    base_commit_sha=$(echo "$ref_response" | jq -r '.object.sha')
     echo "  Base commit: ${base_commit_sha}" >&2
 
-    # Step 3 — Get the tree SHA from the base commit.
-    # The commit response contains a nested "tree": { "sha": "..." } block.
-    # We must extract that specifically using grep -A1, NOT the first "sha" in the
-    # response (which is the commit SHA itself) — using the wrong SHA causes GitHub
-    # to see no diff on subsequent runs and silently create empty commits.
+    # Step 3 — Get the tree SHA from the base commit
     local commit_response
     commit_response=$(github_api GET "/repos/${GITHUB_REPO}/git/commits/${base_commit_sha}")
     local base_tree_sha
-    base_tree_sha=$(echo "$commit_response" | grep -A1 '"tree"' | grep '"sha"' | head -1 | sed 's/.*"sha": *"\([^"]*\)".*/\1/')
+    base_tree_sha=$(echo "$commit_response" | jq -r '.tree.sha')
     echo "  Base tree:   ${base_tree_sha}" >&2
 
     # Step 4 — Create a blob for each file and build the tree entries JSON
@@ -158,6 +154,7 @@ commit_files_to_github() {
     while IFS= read -r source_file; do
         local filename
         filename=$(basename "$source_file")
+
         local dest_path
         if [[ "$dest_folder" == "." ]]; then
             dest_path="$filename"
@@ -185,9 +182,8 @@ commit_files_to_github() {
     local tree_response
     tree_response=$(github_api POST "/repos/${GITHUB_REPO}/git/trees" \
         "{\"base_tree\": \"${base_tree_sha}\", \"tree\": ${tree_entries}}")
-    echo "Tree response: ${tree_response}" >&2
     local new_tree_sha
-    new_tree_sha=$(echo "$tree_response" | grep '"sha"' | head -1 | sed 's/.*"sha": *"\([^"]*\)".*/\1/')
+    new_tree_sha=$(echo "$tree_response" | jq -r '.sha')
     echo "  New tree: ${new_tree_sha}" >&2
 
     # Step 6 — Create the commit
@@ -198,7 +194,7 @@ commit_files_to_github() {
     local new_commit_response
     new_commit_response=$(github_api POST "/repos/${GITHUB_REPO}/git/commits" "$commit_body")
     local new_commit_sha
-    new_commit_sha=$(echo "$new_commit_response" | grep '"sha"' | head -1 | sed 's/.*"sha": *"\([^"]*\)".*/\1/')
+    new_commit_sha=$(echo "$new_commit_response" | jq -r '.sha')
     echo "  New commit: ${new_commit_sha}" >&2
 
     # Step 7 — Update the branch ref to point to the new commit
@@ -216,7 +212,7 @@ commit_files_to_github() {
 #
 # Parameters (all positional, all required except commit_message):
 #   $1 - Source pattern(s), comma-delimited (e.g. "myfolder/*.yaml")
-#   $2 - Destination folder in the GitHub repo (e.g. "configs")
+#   $2 - Destination folder in the GitHub repo (e.g. "configs" or "." for root)
 #   $3 - GitHub repo in "owner/name" format (e.g. "myorg/myrepo")
 #   $4 - GitHub branch (e.g. "main")
 #   $5 - Commit message (e.g. "chore: update configs")
@@ -225,14 +221,14 @@ commit_files_to_github() {
 #   GITHUB_TOKEN - GitHub personal access token
 # -----------------------------------------------------------------------------
 main() {
-local errors=0
- 
+    local errors=0
+
     if [[ -z "${SOURCE:-}" ]]; then
         echo "Error: SOURCE is not set. Comma-delimited path pattern(s), e.g. \"myfolder/*.yaml\"" >&2
         ((errors++)) || true
     fi
     if [[ -z "${DESTINATION:-}" ]]; then
-        echo "Error: DESTINATION is not set. Destination folder in the repo, e.g. \"configs\"" >&2
+        echo "Error: DESTINATION is not set. Destination folder in the repo, e.g. \"configs\" or \".\" for root" >&2
         ((errors++)) || true
     fi
     if [[ -z "${REPOSITORY_URL:-}" ]]; then
@@ -251,7 +247,7 @@ local errors=0
         echo "Error: GITHUB_TOKEN is not set. GitHub personal access token." >&2
         ((errors++)) || true
     fi
- 
+
     if [[ $errors -gt 0 ]]; then
         exit 1
     fi
