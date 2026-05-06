@@ -33,6 +33,7 @@ jobs:
           destination: .
           repository-url: twplatformlabs/static
           branch: master
+          commit-message: "test without job or url injection"
       - run:
           name: confirm write-to-github results
           command: |
