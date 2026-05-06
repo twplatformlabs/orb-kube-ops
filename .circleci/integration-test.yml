@@ -25,7 +25,7 @@ jobs:
       - run:
           name: generate unique file to test write-to-github
           command: |
-            uuid=$(uuidgen)
+            uuid=$(date +%s%N)
             echo "$uuid" > check.uuid
             echo "WRITEUUID=${uuid}" >> $BASH_ENV
       - kube/write-to-github:
