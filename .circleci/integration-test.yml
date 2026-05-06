@@ -31,7 +31,7 @@ jobs:
       - kube/write-to-github:
           source: check.uuid
           destination: check.uuid
-          repository-url: https://github.com/twplatformlabs/static
+          repository-url: twplatformlabs/static
       - run:
           name: confirm write-to-github results
           command: |
