@@ -158,7 +158,12 @@ commit_files_to_github() {
     while IFS= read -r source_file; do
         local filename
         filename=$(basename "$source_file")
-        local dest_path="${dest_folder}/${filename}"
+        local dest_path
+        if [[ "$dest_folder" == "." ]]; then
+            dest_path="$filename"
+        else
+            dest_path="${dest_folder}/${filename}"
+        fi
 
         echo "  Uploading: ${source_file} -> ${dest_path}" >&2
         local blob_sha
