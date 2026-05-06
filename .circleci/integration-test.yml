@@ -13,14 +13,34 @@ jobs:
 
   test general commands:
     docker:
-      - image: twdps/circleci-kube-ops:alpine-stable
+      - image: ghcr.io/twplatformlabs/circleci-eks-ops:alpine-latest
     steps:
       - checkout
       - kube/op-kubeconfig:
           op-value: *kubeconfig
+      - op/env
       - run:
           name: confirm op-config results
           command: cat ~/.kube/config | grep "clusters:"
+      - run:
+          name: generate unique file to test write-to-github
+          command: |
+            uuid=$(uuidgen)
+            echo "$uuid" > check.uuid
+            echo "WRITEUUID=${uuid}" >> $BASH_ENV
+      - kube/write-to-github:
+          source: check.uuid
+          destination: check.uuid
+          repository-url: https://github.com/twplatformlabs/static
+      - run:
+          name: confirm write-to-github results
+          command: |
+            curl -O https://raw.githubusercontent.com/twplatformlabs/static/main/check.uuid
+            contents=$(cat check.uuid)
+            if [ "$contents" != "$WRITEUUID" ]; then
+              echo "write-to-github failed"
+              exit 1
+            fi
 
   test package install:
     machine:

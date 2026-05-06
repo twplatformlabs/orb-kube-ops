@@ -1,0 +1,41 @@
+# src/commands/write-to-github.yaml
+# yamllint disable rule:line-length
+---
+description: |
+  Support for Argo or Flux GitOps orchestration. Individual application pipelines can
+  perform direct writes of deployment configuration files to GitHub configuration repositories.
+
+parameters:
+
+  source:
+    description: Source path for file(s) to be written.
+    type: string
+
+  destination: 
+    description: Target path for file(s) to be written.
+    type: string
+
+  repository-url:
+    description: GitHub repository URL where file(s) will be written.
+    type: string
+
+  branch:
+    description: GitHub repository branch where file(s) will be written. Default is main.
+    type: string
+    default: "main"
+
+  commit-message:
+    description: Commit message for file(s) to be written.
+    type: string
+    default: "Direct write from Circle Job ${CIRCLE_JOB} at ${CIRCLE_BUILD_URL}"
+
+steps:
+  - run:
+      name: Write direct to << parameters.repository-url >>
+      environment:
+        SOURCE: << parameters.source >>
+        DESTINATION: << parameters.destination >>
+        REPOSITORY_URL: << parameters.repository-url >>
+        BRANCH: << parameters.branch >>
+        COMMIT_MESSAGE: << parameters.commit-message >>
+      command: <<include(scripts/write_to_github.sh)>>
