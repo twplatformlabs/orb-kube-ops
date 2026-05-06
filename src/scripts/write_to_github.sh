@@ -235,7 +235,7 @@ main() {
     local dest_folder="$DESTINATION"
     GITHUB_REPO="$REPOSITORY_URL"
     GITHUB_BRANCH="$BRANCH"
-    local commit_message="$COMMIT_MESSAGE"
+    local commit_message="$COMMITMESSAGE"
 
     if [[ -z "${GITHUB_TOKEN:-}" ]]; then
         echo "Error: GITHUB_TOKEN environment variable is not set." >&2

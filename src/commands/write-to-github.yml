@@ -37,5 +37,5 @@ steps:
         DESTINATION: << parameters.destination >>
         REPOSITORY_URL: << parameters.repository-url >>
         BRANCH: << parameters.branch >>
-        COMMIT_MESSAGE: << parameters.commit-message >>
+        COMMITMESSAGE: << parameters.commit-message >>
       command: <<include(scripts/write_to_github.sh)>>
