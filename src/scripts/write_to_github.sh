@@ -256,10 +256,11 @@ local errors=0
     GITHUB_BRANCH="$BRANCH"
     local commit_message="$COMMITMESSAGE"
 
-    if [[ -z "${GITHUB_TOKEN:-}" ]]; then
-        echo "Error: GITHUB_TOKEN environment variable is not set." >&2
-        exit 1
-    fi
+    echo "Source: ${source_pattern}" >&2
+    echo "Destination: ${dest_folder}" >&2
+    echo "GitHub repo: ${GITHUB_REPO}" >&2
+    echo "GitHub branch: ${GITHUB_BRANCH}" >&2
+    echo "Commit message: ${commit_message}" >&2
 
     commit_files_to_github "$source_pattern" "$dest_folder" "$commit_message"
 }
