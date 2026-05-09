@@ -37,9 +37,13 @@ jobs:
       - run:
           name: confirm write-to-github results
           command: |
-            sleep 10    # wait a few seconds so the cache clears
-            curl -O https://raw.githubusercontent.com/twplatformlabs/static/refs/heads/master/check.uuid
-            contents=$(cat check.uuid)
+            # sleep 10    # wait a few seconds so the cache clears
+            # curl -O https://raw.githubusercontent.com/twplatformlabs/static/refs/heads/master/check.uuid
+            # contents=$(cat check.uuid)
+            contents=$(curl -s \
+              -H "Authorization: Bearer $GITHUB_TOKEN" \
+              -H "Accept: application/vnd.github.raw+json" \
+              https://api.github.com/repos/twplatformlabs/static/contents/check.uuid)
             echo "contents: $contents"
             echo "WRITEUUID: $WRITEUUID"
             if [ "$contents" != "$WRITEUUID" ]; then
