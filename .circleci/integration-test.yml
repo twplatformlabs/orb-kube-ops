@@ -39,6 +39,8 @@ jobs:
           command: |
             curl -O https://raw.githubusercontent.com/twplatformlabs/static/main/check.uuid
             contents=$(cat check.uuid)
+            echo "contents: $contents"
+            echo "WRITEUUID: $WRITEUUID"
             if [ "$contents" != "$WRITEUUID" ]; then
               echo "write-to-github failed"
               exit 1
