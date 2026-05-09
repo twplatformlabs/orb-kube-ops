@@ -37,7 +37,7 @@ jobs:
       - run:
           name: confirm write-to-github results
           command: |
-            curl -O https://raw.githubusercontent.com/twplatformlabs/static/main/check.uuid
+            curl -O https://raw.githubusercontent.com/twplatformlabs/static/refs/heads/master/check.uuid
             contents=$(cat check.uuid)
             echo "contents: $contents"
             echo "WRITEUUID: $WRITEUUID"
