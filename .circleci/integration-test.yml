@@ -37,6 +37,7 @@ jobs:
       - run:
           name: confirm write-to-github results
           command: |
+            sleep 10    # wait a few seconds so the cache clears
             curl -O https://raw.githubusercontent.com/twplatformlabs/static/refs/heads/master/check.uuid
             contents=$(cat check.uuid)
             echo "contents: $contents"
