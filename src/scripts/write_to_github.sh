@@ -75,7 +75,7 @@ github_api() {
     local body="${3:-}"
 
     local response
-    response=$(curl --silent --fail --show-error \
+    response=$(curl --silent --fail-with-body --show-error \
         --request "$method" \
         --header "Authorization: Bearer ${GITHUB_TOKEN}" \
         --header "Accept: application/vnd.github+json" \
