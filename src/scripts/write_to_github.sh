@@ -70,12 +70,10 @@ list_files() {
 #   $3 - (Optional) JSON request body
 # -----------------------------------------------------------------------------
 github_api() {
-    local method="$1"
-    local path="$2"
-    local body="${3:-}"
-
-    local response
-    response=$(curl --silent --fail-with-body --show-error \
+    local method="$1" path="$2" body="${3:-}"
+    local out http
+    out=$(curl --silent --show-error \
+        --write-out '\n%{http_code}' \
         --request "$method" \
         --header "Authorization: Bearer ${GITHUB_TOKEN}" \
         --header "Accept: application/vnd.github+json" \
@@ -83,9 +81,32 @@ github_api() {
         --header "Content-Type: application/json" \
         ${body:+--data "$body"} \
         "${GITHUB_API}${path}")
-
-    echo "$response"
+    http="${out##*$'\n'}"     # last line = status code
+    out="${out%$'\n'*}"       # everything before = body
+    if [[ "$http" -ge 400 ]]; then
+        echo "GitHub API ${method} ${path} -> HTTP ${http}" >&2
+        echo "$out" >&2
+        return 1
+    fi
+    echo "$out"
 }
+# github_api() {
+#     local method="$1"
+#     local path="$2"
+#     local body="${3:-}"
+
+#     local response
+#     response=$(curl --silent --fail-with-body --show-error \
+#         --request "$method" \
+#         --header "Authorization: Bearer ${GITHUB_TOKEN}" \
+#         --header "Accept: application/vnd.github+json" \
+#         --header "X-GitHub-Api-Version: 2022-11-28" \
+#         --header "Content-Type: application/json" \
+#         ${body:+--data "$body"} \
+#         "${GITHUB_API}${path}")
+
+#     echo "$response"
+# }
 
 # -----------------------------------------------------------------------------
 # create_blob
