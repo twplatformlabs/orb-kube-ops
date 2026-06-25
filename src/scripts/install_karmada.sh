@@ -14,12 +14,12 @@ if [[ "$INSTALL_KARMADA_VERSION" == "latest" ]]; then
   exit 1
 fi
 
-echo "preparing to install karmadactl ${VERSION}"
+echo "preparing to install karmadactl ${INSTALL_KARMADA_VERSION}"
 
 if [[ "$USE_SUDO" == "true" ]]; then
-  sudo bash -c "$(declare -f install); install ${VERSION};"
+  sudo bash -c "$(declare -f install); install ${INSTALL_KARMADA_VERSION};"
 else
-  install "${VERSION}"
+  install "${INSTALL_KARMADA_VERSION}"
 fi
 
 karmadactl version || { echo "error: invalid karmadactl version"; exit 2; }
