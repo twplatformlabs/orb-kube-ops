@@ -8,10 +8,51 @@ set -euo pipefail
 #   $DESTINATION     - Destination folder in the repo, e.g. "configs" or "." for root
 #   $REPOSITORY_URL  - GitHub repo as owner/name, e.g. "myorg/myrepo"
 #   $BRANCH          - Target branch, e.g. "main"
-#   $COMMITMESSAGE  - Commit message, e.g. "chore: update configs"
+#   $COMMITMESSAGE   - Commit message (may reference env vars, e.g. "$CIRCLE_BUILD_URL")
 #   GITHUB_TOKEN     - GitHub personal access token (must be set before running)
 
 GITHUB_API="https://api.github.com"
+
+# Populated by github_api() on every call so callers can inspect the HTTP status.
+GITHUB_API_STATUS=""
+
+# -----------------------------------------------------------------------------
+# github_api
+#   Authenticated GitHub API call.
+#
+#   Prints the response BODY to stdout and records the HTTP status in the global
+#   GITHUB_API_STATUS. Returns non-zero on a >=400 status WITHOUT discarding the
+#   body, so callers can read GitHub's error message (this is what `--fail` was
+#   hiding before).
+#
+# Arguments:
+#   $1 - HTTP method (GET, POST, PATCH)
+#   $2 - API path (e.g. /repos/owner/name/git/refs/heads/main)
+#   $3 - (Optional) JSON request body
+# -----------------------------------------------------------------------------
+github_api() {
+    local method="$1"
+    local path="$2"
+    local body="${3:-}"
+
+    local out
+    out=$(curl --silent --show-error \
+        --write-out '\n%{http_code}' \
+        --request "$method" \
+        --header "Authorization: Bearer ${GITHUB_TOKEN}" \
+        --header "Accept: application/vnd.github+json" \
+        --header "X-GitHub-Api-Version: 2022-11-28" \
+        --header "Content-Type: application/json" \
+        ${body:+--data "$body"} \
+        "${GITHUB_API}${path}")
+
+    # Last line is the status code (from --write-out); the rest is the body.
+    GITHUB_API_STATUS="${out##*$'\n'}"
+    out="${out%$'\n'*}"
+
+    printf '%s' "$out"
+    [[ "$GITHUB_API_STATUS" -lt 400 ]]
+}
 
 # -----------------------------------------------------------------------------
 # list_files
@@ -61,56 +102,9 @@ list_files() {
 }
 
 # -----------------------------------------------------------------------------
-# github_api
-#   Wrapper for authenticated GitHub API calls.
-#
-# Arguments:
-#   $1 - HTTP method (GET, POST, PATCH)
-#   $2 - API path (e.g. /repos/owner/name/git/refs/heads/main)
-#   $3 - (Optional) JSON request body
-# -----------------------------------------------------------------------------
-github_api() {
-    local method="$1" path="$2" body="${3:-}"
-    local out http
-    out=$(curl --silent --show-error \
-        --write-out '\n%{http_code}' \
-        --request "$method" \
-        --header "Authorization: Bearer ${GITHUB_TOKEN}" \
-        --header "Accept: application/vnd.github+json" \
-        --header "X-GitHub-Api-Version: 2022-11-28" \
-        --header "Content-Type: application/json" \
-        ${body:+--data "$body"} \
-        "${GITHUB_API}${path}")
-    http="${out##*$'\n'}"     # last line = status code
-    out="${out%$'\n'*}"       # everything before = body
-    if [[ "$http" -ge 400 ]]; then
-        echo "GitHub API ${method} ${path} -> HTTP ${http}" >&2
-        echo "$out" >&2
-        return 1
-    fi
-    echo "$out"
-}
-# github_api() {
-#     local method="$1"
-#     local path="$2"
-#     local body="${3:-}"
-
-#     local response
-#     response=$(curl --silent --fail-with-body --show-error \
-#         --request "$method" \
-#         --header "Authorization: Bearer ${GITHUB_TOKEN}" \
-#         --header "Accept: application/vnd.github+json" \
-#         --header "X-GitHub-Api-Version: 2022-11-28" \
-#         --header "Content-Type: application/json" \
-#         ${body:+--data "$body"} \
-#         "${GITHUB_API}${path}")
-
-#     echo "$response"
-# }
-
-# -----------------------------------------------------------------------------
 # create_blob
-#   Uploads a single file's content to GitHub as a blob.
+#   Uploads a single file's content to GitHub as a blob. Content-addressed and
+#   independent of branch state, so this only needs to run once per file.
 #
 # Arguments:
 #   $1 - Local file path
@@ -120,19 +114,179 @@ github_api() {
 # -----------------------------------------------------------------------------
 create_blob() {
     local file="$1"
-    local content
+    local content body response
     content=$(base64 < "$file" | tr -d '\n')
 
-    local response
-    response=$(github_api POST "/repos/${GITHUB_REPO}/git/blobs" \
-        "{\"content\": \"${content}\", \"encoding\": \"base64\"}")
+    body=$(jq -n --arg content "$content" '{content: $content, encoding: "base64"}')
+
+    response=$(github_api POST "/repos/${GITHUB_REPO}/git/blobs" "$body") || {
+        echo "Error: failed to create blob for ${file} (HTTP ${GITHUB_API_STATUS})" >&2
+        echo "$response" >&2
+        exit 1
+    }
 
     echo "$response" | jq -r '.sha'
 }
 
 # -----------------------------------------------------------------------------
+# build_tree_entries
+#   Creates a blob for each source file and emits the tree-entries JSON array.
+#   Runs ONCE; the resulting array is reused across ref-update retries.
+#
+# Arguments:
+#   $1 - Newline-delimited list of source file paths
+#   $2 - Destination folder in the repo
+#
+# Output:
+#   A JSON array of tree entries.
+# -----------------------------------------------------------------------------
+build_tree_entries() {
+    local source_files="$1"
+    local dest_folder="$2"
+    local entries=""
+
+    while IFS= read -r source_file; do
+        [[ -z "$source_file" ]] && continue
+
+        local filename dest_path blob_sha entry
+        filename=$(basename "$source_file")
+
+        if [[ "$dest_folder" == "." ]]; then
+            dest_path="$filename"
+        else
+            dest_path="${dest_folder}/${filename}"
+        fi
+
+        echo "  Uploading: ${source_file} -> ${dest_path}" >&2
+        blob_sha=$(create_blob "$source_file")
+
+        entry=$(jq -n \
+            --arg path "$dest_path" \
+            --arg sha "$blob_sha" \
+            '{path: $path, mode: "100644", type: "blob", sha: $sha}')
+        entries+="${entry}"$'\n'
+    done <<< "$source_files"
+
+    # Slurp the newline-delimited objects into a single JSON array.
+    printf '%s' "$entries" | jq -s '.'
+}
+
+# -----------------------------------------------------------------------------
+# commit_and_push
+#   Retryable tree -> commit -> ref-update sequence.
+#
+#   Each attempt re-reads the LIVE branch tip, rebuilds the tree onto it,
+#   creates a commit parented on it, and fast-forwards the ref. If the ref moved
+#   between read and update ("Update is not a fast forward"), it rebuilds on the
+#   new tip and retries. If the resulting tree matches the base tree, it's a
+#   no-op and we skip the commit + ref update entirely.
+#
+# Arguments:
+#   $1 - Tree entries JSON array (from build_tree_entries)
+#   $2 - Commit message
+#
+# Output:
+#   The new commit SHA on success (empty on a skipped no-op).
+# -----------------------------------------------------------------------------
+commit_and_push() {
+    local tree_entries="$1"
+    local commit_message="$2"
+    local attempt=1
+    local max_attempts=5
+
+    while (( attempt <= max_attempts )); do
+        echo "Commit attempt ${attempt}/${max_attempts}..." >&2
+
+        # 1 — current branch tip
+        local ref_response base_commit_sha
+        ref_response=$(github_api GET "/repos/${GITHUB_REPO}/git/refs/heads/${GITHUB_BRANCH}") || {
+            echo "Error: failed to read ref (HTTP ${GITHUB_API_STATUS})" >&2
+            echo "$ref_response" >&2
+            return 1
+        }
+        base_commit_sha=$(echo "$ref_response" | jq -r '.object.sha')
+        echo "  Base commit (live ref): ${base_commit_sha}" >&2
+
+        # 2 — tree of that commit
+        local commit_response base_tree_sha
+        commit_response=$(github_api GET "/repos/${GITHUB_REPO}/git/commits/${base_commit_sha}") || {
+            echo "Error: failed to read base commit (HTTP ${GITHUB_API_STATUS})" >&2
+            echo "$commit_response" >&2
+            return 1
+        }
+        base_tree_sha=$(echo "$commit_response" | jq -r '.tree.sha')
+
+        # 3 — build new tree on top of the live base tree
+        local tree_body tree_response new_tree_sha
+        tree_body=$(jq -n \
+            --arg base "$base_tree_sha" \
+            --argjson tree "$tree_entries" \
+            '{base_tree: $base, tree: $tree}')
+        tree_response=$(github_api POST "/repos/${GITHUB_REPO}/git/trees" "$tree_body") || {
+            echo "Error: failed to create tree (HTTP ${GITHUB_API_STATUS})" >&2
+            echo "$tree_response" >&2
+            return 1
+        }
+        new_tree_sha=$(echo "$tree_response" | jq -r '.sha')
+        echo "  Base tree: ${base_tree_sha}" >&2
+        echo "  New tree:  ${new_tree_sha}" >&2
+
+        # 4 — no-op short circuit (routine: pushed files identical to repo)
+        if [[ "$new_tree_sha" == "$base_tree_sha" ]]; then
+            echo "  No changes: new tree matches base tree. Skipping commit + ref update." >&2
+            return 0
+        fi
+
+        # 5 — commit parented on the live tip
+        local commit_body new_commit_response new_commit_sha
+        commit_body=$(jq -n \
+            --arg msg "$commit_message" \
+            --arg tree "$new_tree_sha" \
+            --arg parent "$base_commit_sha" \
+            '{message: $msg, tree: $tree, parents: [$parent]}')
+        new_commit_response=$(github_api POST "/repos/${GITHUB_REPO}/git/commits" "$commit_body") || {
+            echo "Error: failed to create commit (HTTP ${GITHUB_API_STATUS})" >&2
+            echo "$new_commit_response" >&2
+            return 1
+        }
+        new_commit_sha=$(echo "$new_commit_response" | jq -r '.sha')
+        echo "  New commit: ${new_commit_sha}" >&2
+
+        # 6 — fast-forward the ref
+        local patch_body patch_response
+        patch_body=$(jq -n --arg sha "$new_commit_sha" '{sha: $sha}')
+        patch_response=$(github_api PATCH \
+            "/repos/${GITHUB_REPO}/git/refs/heads/${GITHUB_BRANCH}" \
+            "$patch_body") || true
+
+        if [[ "$GITHUB_API_STATUS" -lt 400 ]]; then
+            echo "  Ref updated to ${new_commit_sha} on attempt ${attempt}" >&2
+            echo "$new_commit_sha"
+            return 0
+        fi
+
+        # Ref update failed — retry only on a genuine non-fast-forward.
+        if echo "$patch_response" | grep -qi "not a fast forward"; then
+            echo "  Ref moved (non-fast-forward). Re-reading tip and rebuilding..." >&2
+            sleep "$attempt"          # linear backoff: 1s, 2s, 3s, ...
+            (( attempt++ ))
+            continue
+        fi
+
+        echo "Error: ref update failed with HTTP ${GITHUB_API_STATUS}:" >&2
+        echo "$patch_response" >&2
+        return 1
+    done
+
+    echo "Error: ref update kept failing as non-fast-forward after ${max_attempts} attempts." >&2
+    echo "       Something is moving '${GITHUB_BRANCH}' faster than this job can fast-forward onto it." >&2
+    return 1
+}
+
+# -----------------------------------------------------------------------------
 # commit_files_to_github
-#   Creates a single GitHub commit containing all source→destination file pairs.
+#   Resolves source files, uploads them once as blobs, then commits + pushes
+#   with retry.
 #
 # Arguments:
 #   $1 - Source pattern(s), comma-delimited
@@ -144,102 +298,34 @@ commit_files_to_github() {
     local dest_folder="$2"
     local commit_message="$3"
 
-    # Step 1 — Generate source file list
     echo "Resolving source files..." >&2
     local source_files
     source_files=$(list_files "$source_pattern") || return 1
     local source_files_count
-    source_files_count=$(echo "$source_files" | wc -l | tr -d ' ')
+    source_files_count=$(echo "$source_files" | grep -c . || true)
     echo "  Found ${source_files_count} file(s)" >&2
 
-    # Step 2 — Get the SHA of the latest commit on the target branch
-    echo "Fetching latest commit SHA from '${GITHUB_BRANCH}'..." >&2
-    local ref_response
-    ref_response=$(github_api GET "/repos/${GITHUB_REPO}/git/refs/heads/${GITHUB_BRANCH}")
-    local base_commit_sha
-    base_commit_sha=$(echo "$ref_response" | jq -r '.object.sha')
-    echo "  Base commit: ${base_commit_sha}" >&2
-
-    # Step 3 — Get the tree SHA from the base commit
-    local commit_response
-    commit_response=$(github_api GET "/repos/${GITHUB_REPO}/git/commits/${base_commit_sha}")
-    local base_tree_sha
-    base_tree_sha=$(echo "$commit_response" | jq -r '.tree.sha')
-    echo "  Base tree:   ${base_tree_sha}" >&2
-
-    # Step 4 — Create a blob for each file and build the tree entries JSON
     echo "Uploading file blobs..." >&2
-    local tree_entries="["
-    local first=true
+    local tree_entries
+    tree_entries=$(build_tree_entries "$source_files" "$dest_folder")
 
-    while IFS= read -r source_file; do
-        local filename
-        filename=$(basename "$source_file")
-
-        local dest_path
-        if [[ "$dest_folder" == "." ]]; then
-            dest_path="$filename"
-        else
-            dest_path="${dest_folder}/${filename}"
-        fi
-
-        echo "  Uploading: ${source_file} -> ${dest_path}" >&2
-        local blob_sha
-        blob_sha=$(create_blob "$source_file")
-
-        if [[ "$first" == true ]]; then
-            first=false
-        else
-            tree_entries+=","
-        fi
-
-        tree_entries+="{\"path\": \"${dest_path}\", \"mode\": \"100644\", \"type\": \"blob\", \"sha\": \"${blob_sha}\"}"
-    done <<< "$source_files"
-
-    tree_entries+="]"
-
-    # Step 5 — Create a new tree
-    echo "Creating tree..." >&2
-    local tree_response
-    tree_response=$(github_api POST "/repos/${GITHUB_REPO}/git/trees" \
-        "{\"base_tree\": \"${base_tree_sha}\", \"tree\": ${tree_entries}}")
-    local new_tree_sha
-    new_tree_sha=$(echo "$tree_response" | jq -r '.sha')
-    echo "  New tree: ${new_tree_sha}" >&2
-
-    # Step 6 — Create the commit
-    echo "Creating commit..." >&2
-    local commit_body
-    commit_body=$(printf '{"message": "%s", "tree": "%s", "parents": ["%s"]}' \
-        "$commit_message" "$new_tree_sha" "$base_commit_sha")
-    local new_commit_response
-    new_commit_response=$(github_api POST "/repos/${GITHUB_REPO}/git/commits" "$commit_body")
     local new_commit_sha
-    new_commit_sha=$(echo "$new_commit_response" | jq -r '.sha')
-    echo "  New commit: ${new_commit_sha}" >&2
-
-    # Step 7 — Update the branch ref to point to the new commit
-    echo "Updating branch ref..." >&2
-    github_api PATCH "/repos/${GITHUB_REPO}/git/refs/heads/${GITHUB_BRANCH}" \
-        "{\"sha\": \"${new_commit_sha}\"}" > /dev/null
+    new_commit_sha=$(commit_and_push "$tree_entries" "$commit_message") || return 1
 
     echo "" >&2
-    echo "Done! Committed ${source_files_count} file(s) to ${GITHUB_REPO}@${GITHUB_BRANCH}" >&2
-    echo "Commit SHA: ${new_commit_sha}" >&2
+    if [[ -n "$new_commit_sha" ]]; then
+        echo "Done! Committed ${source_files_count} file(s) to ${GITHUB_REPO}@${GITHUB_BRANCH}" >&2
+        echo "Commit SHA: ${new_commit_sha}" >&2
+    else
+        echo "Done! No changes to commit for ${GITHUB_REPO}@${GITHUB_BRANCH}" >&2
+    fi
 }
 
 # -----------------------------------------------------------------------------
 # Main
 #
-# Parameters (all positional, all required except commit_message):
-#   $1 - Source pattern(s), comma-delimited (e.g. "myfolder/*.yaml")
-#   $2 - Destination folder in the GitHub repo (e.g. "configs" or "." for root)
-#   $3 - GitHub repo in "owner/name" format (e.g. "myorg/myrepo")
-#   $4 - GitHub branch (e.g. "main")
-#   $5 - Commit message (e.g. "chore: update configs")
-#
 # Environment (must be set before running):
-#   GITHUB_TOKEN - GitHub personal access token
+#   SOURCE, DESTINATION, REPOSITORY_URL, BRANCH, COMMITMESSAGE, GITHUB_TOKEN
 # -----------------------------------------------------------------------------
 main() {
     local errors=0
@@ -277,8 +363,16 @@ main() {
     local dest_folder="$DESTINATION"
     GITHUB_REPO="$REPOSITORY_URL"
     GITHUB_BRANCH="$BRANCH"
+
+    # Expand env-var references in the message (e.g. $CIRCLE_BUILD_URL) WITHOUT
+    # the command-execution risk of `eval`. envsubst only substitutes variables;
+    # it will not run $(...) or backticks. Falls back to eval if unavailable.
     local commit_message
-    commit_message=$(eval echo "$COMMITMESSAGE")
+    if command -v envsubst >/dev/null 2>&1; then
+        commit_message=$(printf '%s' "$COMMITMESSAGE" | envsubst)
+    else
+        commit_message=$(eval echo "$COMMITMESSAGE")
+    fi
 
     echo "Source: ${source_pattern}" >&2
     echo "Destination: ${dest_folder}" >&2
@@ -288,7 +382,7 @@ main() {
 
     echo "CIRCLE_JOB: ${CIRCLE_JOB:-NOT SET}" >&2
     echo "CIRCLE_BUILD_URL: ${CIRCLE_BUILD_URL:-NOT SET}" >&2
-    
+
     commit_files_to_github "$source_pattern" "$dest_folder" "$commit_message"
 }
 
